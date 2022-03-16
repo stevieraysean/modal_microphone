@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
-      <ZoomEndTime time="490.200000001 ms"></ZoomEndTime>
-      <Cursor1Time time="147.600000000 ms"></Cursor1Time>
+      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
+      <ZoomEndTime time="1,000.001 ns"></ZoomEndTime>
+      <Cursor1Time time="1,000.000 ns"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="276"></NameColumnWidth>
-      <ValueColumnWidth column_width="120"></ValueColumnWidth>
+      <NameColumnWidth column_width="255"></NameColumnWidth>
+      <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="6" />
+   <WVObjectSize size="7" />
    <wvobject type="logic" fp_name="/mems_pdm_tb/r_Clock">
       <obj_property name="ElementShortName">r_Clock</obj_property>
       <obj_property name="ObjectShortName">r_Clock</obj_property>
@@ -46,12 +46,16 @@
       <obj_property name="ElementShortName">c_CLOCK_PERIOD</obj_property>
       <obj_property name="ObjectShortName">c_CLOCK_PERIOD</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/mems_pdm_tb/c_FREQUENCY">
-      <obj_property name="ElementShortName">c_FREQUENCY</obj_property>
-      <obj_property name="ObjectShortName">c_FREQUENCY</obj_property>
-   </wvobject>
    <wvobject type="other" fp_name="/mems_pdm_tb/c_BIT_DEPTH">
       <obj_property name="ElementShortName">c_BIT_DEPTH</obj_property>
       <obj_property name="ObjectShortName">c_BIT_DEPTH</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mems_pdm_tb/pdm_sigma_delta_inst/o_waveform">
+      <obj_property name="ElementShortName">o_waveform[23:0]</obj_property>
+      <obj_property name="ObjectShortName">o_waveform[23:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mems_pdm_tb/pdm_sigma_delta_inst/i_clk">
+      <obj_property name="ElementShortName">i_clk</obj_property>
+      <obj_property name="ObjectShortName">i_clk</obj_property>
    </wvobject>
 </wave_config>
