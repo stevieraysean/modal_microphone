@@ -10,22 +10,18 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000 ns"></ZoomStartTime>
-      <ZoomEndTime time="1,000.001 ns"></ZoomEndTime>
-      <Cursor1Time time="1,000.000 ns"></Cursor1Time>
+      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
+      <ZoomEndTime time="114.400000001 ms"></ZoomEndTime>
+      <Cursor1Time time="46.400000000 ms"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="255"></NameColumnWidth>
+      <NameColumnWidth column_width="251"></NameColumnWidth>
       <ValueColumnWidth column_width="66"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="7" />
+   <WVObjectSize size="4" />
    <wvobject type="logic" fp_name="/mems_pdm_tb/r_Clock">
       <obj_property name="ElementShortName">r_Clock</obj_property>
       <obj_property name="ObjectShortName">r_Clock</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/mems_pdm_tb/r_adc">
-      <obj_property name="ElementShortName">r_adc</obj_property>
-      <obj_property name="ObjectShortName">r_adc</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/mems_pdm_tb/r_sine_wave">
       <obj_property name="ElementShortName">r_sine_wave[23:0]</obj_property>
@@ -42,20 +38,21 @@
       <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
       <obj_property name="AnalogHorizLine">0.000000</obj_property>
    </wvobject>
-   <wvobject type="other" fp_name="/mems_pdm_tb/c_CLOCK_PERIOD">
-      <obj_property name="ElementShortName">c_CLOCK_PERIOD</obj_property>
-      <obj_property name="ObjectShortName">c_CLOCK_PERIOD</obj_property>
-   </wvobject>
-   <wvobject type="other" fp_name="/mems_pdm_tb/c_BIT_DEPTH">
-      <obj_property name="ElementShortName">c_BIT_DEPTH</obj_property>
-      <obj_property name="ObjectShortName">c_BIT_DEPTH</obj_property>
+   <wvobject type="logic" fp_name="/mems_pdm_tb/r_adc">
+      <obj_property name="ElementShortName">r_adc</obj_property>
+      <obj_property name="ObjectShortName">r_adc</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/mems_pdm_tb/pdm_sigma_delta_inst/o_waveform">
-      <obj_property name="ElementShortName">o_waveform[23:0]</obj_property>
-      <obj_property name="ObjectShortName">o_waveform[23:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/mems_pdm_tb/pdm_sigma_delta_inst/i_clk">
-      <obj_property name="ElementShortName">i_clk</obj_property>
-      <obj_property name="ObjectShortName">i_clk</obj_property>
+      <obj_property name="ElementShortName">o_waveform[24:0]</obj_property>
+      <obj_property name="ObjectShortName">o_waveform[24:0]</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_FIXED</obj_property>
+      <obj_property name="AnalogYRangeMin">-128.000000</obj_property>
+      <obj_property name="AnalogYRRangeMax">128.000000</obj_property>
+      <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_LINEAR</obj_property>
+      <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
+      <obj_property name="AnalogHorizLine">0.000000</obj_property>
    </wvobject>
 </wave_config>

@@ -17,7 +17,7 @@ architecture Behavioral of mems_pdm_tb is
     end component pdm_sigma_delta;
 
     constant c_CLOCK_PERIOD : real := 1.00/10000.0;
-    constant c_SINE_PERIOD : real := 100.0; -- 10 Hz
+    constant c_SINE_PERIOD : real := 20.0; -- 10 Hz
     constant c_BIT_DEPTH : integer := 24;
 
     signal r_Clock : std_logic := '0';
@@ -38,7 +38,7 @@ begin
     begin
         if (r_Clock = '1') then
             v_tstep := v_tstep + c_CLOCK_PERIOD;
-            v_analog_sig := 0.5*sin(MATH_2_PI * v_tstep * (1.0 /c_SINE_PERIOD)) + 0.5*sin(MATH_2_PI * v_tstep * (1.0 /(0.25*c_SINE_PERIOD)));
+            v_analog_sig := sin(MATH_2_PI * v_tstep * (1.0 /c_SINE_PERIOD));-- + 0.5*sin(MATH_2_PI * v_tstep * (1.0 /(0.25*c_SINE_PERIOD)));
 
             v_difference := v_analog_sig - v_dac;
             v_integrator := v_difference + v_integrator;
