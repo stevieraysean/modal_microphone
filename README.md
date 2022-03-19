@@ -8,6 +8,8 @@
 cd /.../modal_microphone
 source rebuild.tcl
 ```
+Method used for Vivado Git repo setup:
+https://github.com/jhallen/vivado_setup
 
 ## Roadmap
 - Testbench Simulation of pulse-density-modulated (PDM) Signals
