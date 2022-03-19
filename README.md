@@ -4,8 +4,10 @@
 - Clone project
 - Open Vivado
 - In TCL Console:
-  - '''cd /.../modal_microphone'''
-  - ''' source rebuild.tcl ''' 
+''' 
+cd /.../modal_microphone
+source rebuild.tcl
+'''
 
 ## Roadmap
 - Testbench Simulation of pulse-density-modulated (PDM) Signals
