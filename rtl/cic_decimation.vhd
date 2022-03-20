@@ -26,15 +26,17 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 
-entity pdm_sigma_delta is
+entity cic_decimation is
     Port ( i_clk, i_pdm: in STD_LOGIC;
            o_recovered_waveform: out SIGNED(23 downto 0));
-end pdm_sigma_delta;
+end cic_decimation;
 
-architecture Behavioral of pdm_sigma_delta is
+architecture Behavioral of cic_decimation is
 
      -- Enough head room to avoid saturation
     constant c_BIT_DEPTH : integer := 32;
+
+    constant c_DECIMATION : integer := 64;
 
     signal integrator1_delay : signed((c_BIT_DEPTH-1) downto 0) := (others => '0');
     signal integrator2_delay : signed((c_BIT_DEPTH-1) downto 0) := (others => '0');
@@ -72,7 +74,7 @@ begin
 
             integrator4_delay <= integrator4;
             integrator4 := integrator4 + integrator3;
-            
+
             integrator_out <= integrator4;
         end if;
     end process;
@@ -82,8 +84,8 @@ begin
     begin
         if (i_clk'event and i_clk = '1') then
             counter := counter + 1;
-            -- TODO: better way to handle multiple clock rates?
-            if (counter = "1000000") then
+            -- TODO: better way to handle multiple clock rates
+            if (counter = c_DECIMATION) then
                 decimated_sig <= integrator_out;
                 counter := "0000000";
             end if;
@@ -100,7 +102,7 @@ begin
         if (i_clk'event and i_clk = '1') then
             counter := counter + 1;
             -- TODO: better way to handle multiple clock rates?
-            if (counter = "1000000") then
+            if (counter = c_DECIMATION) then
                 comb1_delay <= decimated_sig;
                 comb1 := decimated_sig - comb1_delay;
 
