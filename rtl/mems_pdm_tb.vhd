@@ -19,11 +19,11 @@ architecture Behavioral of mems_pdm_tb is
     constant c_CLOCK_PERIOD : real := (1.0 / c_CLOCK_FREQ_HZ);
     constant c_CLOCK_PERIOD_HALF : time := (c_CLOCK_PERIOD / 2) * 1 sec;
 
-    constant c_BIT_DEPTH : integer := 24;
+    constant c_SIM_BIT_DEPTH : integer := 24;
 
     signal r_Clock : std_logic := '0';
     signal r_adc : STD_LOGIC := '0';
-    signal r_sine_wave : STD_LOGIC_VECTOR((c_BIT_DEPTH-1) downto 0);
+    signal r_sine_wave : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0);
     signal s_signal_sign : STD_LOGIC := '0';
 
 
@@ -42,7 +42,7 @@ begin
         variable v_integrator : real := 0.0;
         variable v_dac : real := 0.0;
 
-        variable c_SINE_FREQ_HZ: real := 200.0;
+        variable c_SINE_FREQ_HZ: real := 1.0;
     begin
         if (r_Clock = '1') then
             v_tstep := v_tstep + c_CLOCK_PERIOD;
@@ -67,7 +67,7 @@ begin
                 v_dac := -1.0;
             end if;
 
-            r_sine_wave <= STD_LOGIC_VECTOR(to_signed(INTEGER(v_analog_sig*((2 ** (c_BIT_DEPTH-1)) -1)),c_BIT_DEPTH));
+            r_sine_wave <= STD_LOGIC_VECTOR(to_signed(INTEGER(v_analog_sig*((2 ** (c_SIM_BIT_DEPTH-1)) -1)),c_SIM_BIT_DEPTH));
             --if v_analog_sig_sign = 1 then
             --    s_signal_sign <= '1';
             --else

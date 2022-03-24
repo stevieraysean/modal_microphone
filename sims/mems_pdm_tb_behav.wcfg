@@ -11,14 +11,17 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
-      <ZoomEndTime time="5.001000001 ms"></ZoomEndTime>
-      <Cursor1Time time="5.001000000 ms"></Cursor1Time>
+      <ZoomEndTime time="1.030000001 ms"></ZoomEndTime>
+      <Cursor1Time time="0.005045560 ms"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="232"></NameColumnWidth>
-      <ValueColumnWidth column_width="108"></ValueColumnWidth>
+      <ValueColumnWidth column_width="104"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="4" />
+   <wave_markers>
+      <marker label="" time="150001000000" />
+   </wave_markers>
    <wvobject type="logic" fp_name="/mems_pdm_tb/r_Clock">
       <obj_property name="ElementShortName">r_Clock</obj_property>
       <obj_property name="ObjectShortName">r_Clock</obj_property>
@@ -36,21 +39,22 @@
       <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
       <obj_property name="AnalogHorizLine">0.000000</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/mems_pdm_tb/cic_decimation_inst/i_pdm">
-      <obj_property name="ElementShortName">i_pdm</obj_property>
-      <obj_property name="ObjectShortName">i_pdm</obj_property>
+   <wvobject type="other" fp_name="/mems_pdm_tb/cic_decimation_inst/c_CIC_BIT_DEPTH">
+      <obj_property name="ElementShortName">c_CIC_BIT_DEPTH</obj_property>
+      <obj_property name="ObjectShortName">c_CIC_BIT_DEPTH</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/mems_pdm_tb/cic_decimation_inst/o_recovered_waveform">
       <obj_property name="ElementShortName">o_recovered_waveform[23:0]</obj_property>
       <obj_property name="ObjectShortName">o_recovered_waveform[23:0]</obj_property>
       <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
       <obj_property name="CellHeight">100</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_FIXED</obj_property>
       <obj_property name="AnalogYRangeMin">-8388608.000000</obj_property>
       <obj_property name="AnalogYRRangeMax">8388608.000000</obj_property>
       <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_LINEAR</obj_property>
       <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
       <obj_property name="AnalogHorizLine">0.000000</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="isExpanded"></obj_property>
    </wvobject>
 </wave_config>
