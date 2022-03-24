@@ -27,7 +27,7 @@
 #
 # 3. The following remote source files that were added to the original project:-
 #
-#    "/projects/fpga/modal_microphone/rtl/pdm_sigma_delta.vhd"
+#    "/projects/fpga/modal_microphone/rtl/cic_decimation.vhd"
 #    "/projects/fpga/modal_microphone/cons/arty_a7_35.xdc"
 #    "/projects/fpga/modal_microphone/rtl/mems_pdm_tb.vhd"
 #    "/projects/fpga/modal_microphone/sims/mems_pdm_tb_behav.wcfg"
@@ -38,7 +38,7 @@
 proc checkRequiredFiles { origin_dir} {
   set status true
   set files [list \
- "[file normalize "$origin_dir/rtl/pdm_sigma_delta.vhd"]"\
+ "[file normalize "$origin_dir/rtl/cic_decimation.vhd"]"\
  "[file normalize "$origin_dir/cons/arty_a7_35.xdc"]"\
  "[file normalize "$origin_dir/rtl/mems_pdm_tb.vhd"]"\
  "[file normalize "$origin_dir/sims/mems_pdm_tb_behav.wcfg"]"\
@@ -159,12 +159,12 @@ if {[string equal [get_filesets -quiet sources_1] ""]} {
 # Set 'sources_1' fileset object
 set obj [get_filesets sources_1]
 set files [list \
- [file normalize "${origin_dir}/rtl/pdm_sigma_delta.vhd"] \
+ [file normalize "${origin_dir}/rtl/cic_decimation.vhd"] \
 ]
 add_files -norecurse -fileset $obj $files
 
 # Set 'sources_1' fileset file properties for remote files
-set file "$origin_dir/rtl/pdm_sigma_delta.vhd"
+set file "$origin_dir/rtl/cic_decimation.vhd"
 set file [file normalize $file]
 set file_obj [get_files -of_objects [get_filesets sources_1] [list "*$file"]]
 set_property -name "file_type" -value "VHDL" -objects $file_obj
@@ -175,7 +175,7 @@ set_property -name "file_type" -value "VHDL" -objects $file_obj
 
 # Set 'sources_1' fileset properties
 set obj [get_filesets sources_1]
-set_property -name "top" -value "pdm_sigma_delta" -objects $obj
+set_property -name "top" -value "cic_decimation" -objects $obj
 set_property -name "top_auto_set" -value "0" -objects $obj
 
 # Create 'constrs_1' fileset (if not found)

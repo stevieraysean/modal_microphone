@@ -25,6 +25,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
+use IEEE.MATH_REAL.ALL;
 
 entity cic_decimation is
     Port ( i_clk, i_pdm: in STD_LOGIC;
@@ -34,9 +35,11 @@ end cic_decimation;
 architecture Behavioral of cic_decimation is
 
      -- Enough head room to avoid saturation
-    constant c_BIT_DEPTH : integer := 32;
-
     constant c_DECIMATION : integer := 64;
+    constant c_COMB_DELAY : integer := 1;
+    constant c_INPUT_BIT_DEPTH : integer := 1;
+    constant c_STAGES : integer := 4;
+    constant c_BIT_DEPTH : integer := integer(ceil(real(c_STAGES) * LOG2(real(c_DECIMATION * c_COMB_DELAY)) + real(c_INPUT_BIT_DEPTH)));
 
     signal integrator1_delay : signed((c_BIT_DEPTH-1) downto 0) := (others => '0');
     signal integrator2_delay : signed((c_BIT_DEPTH-1) downto 0) := (others => '0');
@@ -63,17 +66,17 @@ begin
             else
                 pdm := to_signed(-1, c_BIT_DEPTH);
             end if;
+            integrator1 := integrator1_delay + pdm;
             integrator1_delay <= integrator1;
-            integrator1 := integrator1 + pdm;
 
+            integrator2 := integrator2_delay + integrator1;
             integrator2_delay <= integrator2;
-            integrator2 := integrator2 + integrator1;
 
+            integrator3 := integrator3_delay + integrator2;
             integrator3_delay <= integrator3;
-            integrator3 := integrator3 + integrator2;
 
+            integrator4 := integrator4_delay + integrator3;
             integrator4_delay <= integrator4;
-            integrator4 := integrator4 + integrator3;
 
             integrator_out <= integrator4;
         end if;
@@ -115,7 +118,7 @@ begin
                 comb4_delay <= comb3;
                 comb4 := comb3 - comb4_delay;
 
-                o_recovered_waveform <= comb4(c_BIT_DEPTH-1-7 downto c_BIT_DEPTH-24-7);
+                o_recovered_waveform <= comb4(c_BIT_DEPTH-1 downto 1);
                 counter := "0000000";
             end if;
         end if;
