@@ -4,7 +4,7 @@
 -- 
 -- Create Date: 02/23/2022 08:52:22 PM
 -- Design Name: 
--- Module Name: pdm_sigma_delta - Behavioral
+-- Module Name: r_pdm_sigma_delta - Behavioral
 -- Project Name: Modal Microphone
 -- Target Devices: Arty-A7 35T
 -- Tool Versions: 
@@ -39,92 +39,63 @@ architecture Behavioral of cic_decimation is
     constant c_CIC_DECIMATION_RATE : integer := 16;
     constant c_CIC_DIFFERENTIAL_DELAY : integer := 1;
     constant c_CIC_STAGES : integer := 6;
-    constant c_CIC_BIT_DEPTH : integer := integer(ceil(real(c_CIC_STAGES) * LOG2(real(c_CIC_DECIMATION_RATE * c_CIC_DIFFERENTIAL_DELAY)) + real(c_CIC_INPUT_BIT_DEPTH )));
-    --constant c_CIC_BIT_DEPTH : integer := 32;
+    constant c_CIC_BIT_DEPTH : integer := 1 + integer( ceil(real(c_CIC_STAGES) * LOG2(real(c_CIC_DECIMATION_RATE * c_CIC_DIFFERENTIAL_DELAY)) + real(c_CIC_INPUT_BIT_DEPTH )));
 
-    signal integrator1_delay : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal integrator2_delay : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal integrator3_delay : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal integrator4_delay : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal integrator5_delay : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal integrator6_delay : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
+    signal r_pdm : signed((c_CIC_BIT_DEPTH-1) downto 0):= (others => '0');
+    signal r_integrator_delays : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES) downto 0) := (others => '0');
+    signal w_integrators : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES) downto 0) := (others => '0');
 
-    signal integrator_out: signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal decimated_sig : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal comb1_delay1 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal comb2_delay1 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal comb3_delay1 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal comb4_delay1 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal comb5_delay1 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-    signal comb6_delay1 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
+    signal integrator_out: signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+    signal decimated_sig : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+    signal comb1_delay1 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+    signal comb2_delay1 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+    signal comb3_delay1 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+    signal comb4_delay1 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+    signal comb5_delay1 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+    signal comb6_delay1 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
 
 begin
-    process_integrator : PROCESS (i_clk)
-        variable integrator1 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable integrator2 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable integrator3 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable integrator4 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable integrator5 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable integrator6 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable pdm : signed((c_CIC_BIT_DEPTH) downto 0):= (others => '0');
+    process_r_pdm : PROCESS (i_clk)
     begin
         if (i_clk'event and i_clk = '1') then
+            -- cast 0/1 to -1/1
             if (i_pdm = '1') then
-                pdm := to_signed(1, (c_CIC_BIT_DEPTH+1));
+                r_pdm <= to_signed(1, (c_CIC_BIT_DEPTH));
             else
-                pdm := to_signed(-1, (c_CIC_BIT_DEPTH+1));
+                r_pdm <= to_signed(-1, (c_CIC_BIT_DEPTH));
             end if;
-            
-            integrator1 := integrator1_delay + pdm;
-            integrator1_delay <= integrator1;
-
-            integrator2 := integrator2_delay + integrator1;
-            integrator2_delay <= integrator2;
-
-            integrator3 := integrator3_delay + integrator2;
-            integrator3_delay <= integrator3;
-
-            integrator4 := integrator4_delay + integrator3;
-            integrator4_delay <= integrator4;
-
-            integrator5 := integrator5_delay + integrator4;
-            integrator5_delay <= integrator5;
-
-            integrator6 := integrator6_delay + integrator5;
-            integrator6_delay <= integrator6;
-
-            integrator_out <= integrator6;
+            r_integrator_delays(c_CIC_BIT_DEPTH-1 downto 0) <= w_integrators(c_CIC_BIT_DEPTH-1 downto 0);
         end if;
     end process;
 
-    process_decimate : PROCESS (i_clk)
-        variable counter : unsigned(6 downto 0) := (others => '0');
-    begin
-        if (i_clk'event and i_clk = '1') then
-            counter := counter + 1;
-            -- TODO: better way to handle multiple clock rates
-            if (counter = c_CIC_DECIMATION_RATE) then
-                decimated_sig <= integrator_out;
-                counter := "0000000";
+    g_GENERATE_w_integrators: for ii in 2 to c_CIC_STAGES generate
+        process_integrator : PROCESS (i_clk)
+        begin
+            if (i_clk'event and i_clk = '1') then
+                r_integrator_delays((ii*c_CIC_BIT_DEPTH)-1 downto (ii-1)*c_CIC_BIT_DEPTH) <= w_integrators((ii*c_CIC_BIT_DEPTH)-1 downto (ii-1)*c_CIC_BIT_DEPTH);
             end if;
-        end if;
-    end process;
+        end process;
+        w_integrators((ii*c_CIC_BIT_DEPTH)-1 downto ((ii-1)*c_CIC_BIT_DEPTH)) <= r_integrator_delays((ii*c_CIC_BIT_DEPTH)-1 downto (ii-1)*c_CIC_BIT_DEPTH) + w_integrators(((ii-1)*c_CIC_BIT_DEPTH)-1 downto (ii-2)*c_CIC_BIT_DEPTH);
+    end generate g_GENERATE_w_integrators; 
+
+    w_integrators(c_CIC_BIT_DEPTH-1 downto 0) <= r_integrator_delays(c_CIC_BIT_DEPTH-1 downto 0) + r_pdm(c_CIC_BIT_DEPTH-1 downto 0); 
+    integrator_out <= w_integrators((c_CIC_BIT_DEPTH * c_CIC_STAGES)-2 downto (c_CIC_BIT_DEPTH * c_CIC_STAGES) - (c_CIC_BIT_DEPTH)-1);
 
     process_comb : PROCESS (i_clk)
-        variable comb1 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable comb2 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable comb3 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable comb4 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable comb5 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
-        variable comb6 : signed((c_CIC_BIT_DEPTH) downto 0) := (others => '0');
+        variable comb1 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+        variable comb2 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+        variable comb3 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+        variable comb4 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+        variable comb5 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
+        variable comb6 : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
         variable counter : unsigned(6 downto 0) := (others => '0');
     begin
         if (i_clk'event and i_clk = '1') then
             counter := counter + 1;
             -- TODO: better way to handle multiple clock rates?
             if (counter = c_CIC_DECIMATION_RATE) then
-                comb1_delay1 <= decimated_sig;
-                comb1 := decimated_sig - comb1_delay1;
+                comb1_delay1 <= integrator_out;
+                comb1 := integrator_out - comb1_delay1;
 
                 comb2_delay1 <= comb1;
                 comb2 := comb1 - comb2_delay1;

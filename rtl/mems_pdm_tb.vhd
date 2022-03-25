@@ -54,7 +54,7 @@ begin
                 c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 0.05;
             end if;
 
-            v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * c_SINE_FREQ_HZ * v_period_modifier); -- + 0.5*sin(MATH_2_PI * v_tstep * (1.0 /(5*c_SINE_PERIOD)));
+            v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * c_SINE_FREQ_HZ * v_period_modifier);
 
             v_difference := v_analog_sig - v_dac;
             v_integrator := v_difference + v_integrator;
@@ -68,12 +68,6 @@ begin
             end if;
 
             r_sine_wave <= STD_LOGIC_VECTOR(to_signed(INTEGER(v_analog_sig*((2 ** (c_SIM_BIT_DEPTH-1)) -1)),c_SIM_BIT_DEPTH));
-            --if v_analog_sig_sign = 1 then
-            --    s_signal_sign <= '1';
-            --else
-            --    s_signal_sign <= '0';
-            --end if;
-
         end if;
     end process;
     
