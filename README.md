@@ -11,7 +11,7 @@ Vivado v2021.2 (64-bit)
 cd /.../modal_microphone
 source rebuild.tcl
 ```
-may need to delete vivado_project directory before source command, or use -force arguement.
+may need to delete modal_microphone_vivado directory before source command, or use -force arguement.
 
 Method used for Vivado Git repo setup:
 https://github.com/jhallen/vivado_setup
