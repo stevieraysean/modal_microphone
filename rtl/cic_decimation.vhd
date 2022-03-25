@@ -29,7 +29,7 @@ use IEEE.MATH_REAL.ALL;
 
 entity cic_decimation is
     Port ( i_clk, i_pdm: in STD_LOGIC;
-           o_recovered_waveform: out SIGNED(23 downto 0));
+           o_recovered_waveform: out SIGNED(23 downto 0) := (others => '0'));
 end cic_decimation;
 
 architecture Behavioral of cic_decimation is
@@ -41,9 +41,11 @@ architecture Behavioral of cic_decimation is
     constant c_CIC_STAGES : integer := 6;
     constant c_CIC_BIT_DEPTH : integer := 1 + integer( ceil(real(c_CIC_STAGES) * LOG2(real(c_CIC_DECIMATION_RATE * c_CIC_DIFFERENTIAL_DELAY)) + real(c_CIC_INPUT_BIT_DEPTH )));
 
+    -- registers
     signal r_pdm : signed((c_CIC_BIT_DEPTH-1) downto 0):= (others => '0');
     signal r_integrator_delays : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES) downto 0) := (others => '0');
-    signal w_integrators : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES) downto 0) := (others => '0');
+    -- wires
+    signal w_integrators : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES) downto 0);
 
     signal integrator_out: signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');
     signal decimated_sig : signed((c_CIC_BIT_DEPTH-1) downto 0) := (others => '0');

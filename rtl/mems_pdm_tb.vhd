@@ -23,7 +23,7 @@ architecture Behavioral of mems_pdm_tb is
 
     signal r_Clock : std_logic := '0';
     signal r_adc : STD_LOGIC := '0';
-    signal r_sine_wave : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0);
+    signal r_sine_wave : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
     signal s_signal_sign : STD_LOGIC := '0';
 
 
