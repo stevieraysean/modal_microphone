@@ -1,0 +1,2 @@
+INFO: [VRFC 10-163] Analyzing VHDL file "/projects/fpga/modal_microphone/rtl/cic_decimation.vhd" into library xil_defaultlib
+INFO: [VRFC 10-3107] analyzing entity 'cic_decimation'
