@@ -34,7 +34,7 @@ begin
     sine_wave : process(r_Clock)
         variable v_tstep : real := 0.0;
         variable v_analog_sig : real := 0.0;
-        variable v_amp : real := 0.99;
+        variable v_amp : real := 0.95;
         variable v_analog_sig_sign : INTEGER := 1;
         variable v_period_modifier : INTEGER := 1;
 

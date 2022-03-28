@@ -10,15 +10,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
-      <ZoomEndTime time="30.001000001 ms"></ZoomEndTime>
-      <Cursor1Time time="0.005371080 ms"></Cursor1Time>
+      <ZoomStartTime time="28,954.565600 us"></ZoomStartTime>
+      <ZoomEndTime time="28,984.615601 us"></ZoomEndTime>
+      <Cursor1Time time="28,969.565600 us"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="232"></NameColumnWidth>
-      <ValueColumnWidth column_width="100"></ValueColumnWidth>
+      <ValueColumnWidth column_width="96"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="6" />
+   <WVObjectSize size="13" />
    <wave_markers>
       <marker label="" time="150001000000" />
    </wave_markers>
@@ -65,5 +65,37 @@
       <obj_property name="ElementShortName">r_comb_delays[155:0]</obj_property>
       <obj_property name="ObjectShortName">r_comb_delays[155:0]</obj_property>
       <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mems_pdm_tb/cic_decimation_inst/r_decimator_clk">
+      <obj_property name="ElementShortName">r_decimator_clk</obj_property>
+      <obj_property name="ObjectShortName">r_decimator_clk</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/mems_pdm_tb/cic_decimation_inst/w_test_i">
+      <obj_property name="ElementShortName">w_test_i</obj_property>
+      <obj_property name="ObjectShortName">w_test_i</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/mems_pdm_tb/cic_decimation_inst/w_test_j">
+      <obj_property name="ElementShortName">w_test_j</obj_property>
+      <obj_property name="ObjectShortName">w_test_j</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/mems_pdm_tb/cic_decimation_inst/w_test1">
+      <obj_property name="ElementShortName">w_test1</obj_property>
+      <obj_property name="ObjectShortName">w_test1</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/mems_pdm_tb/cic_decimation_inst/w_test2">
+      <obj_property name="ElementShortName">w_test2</obj_property>
+      <obj_property name="ObjectShortName">w_test2</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/mems_pdm_tb/cic_decimation_inst/w_test3">
+      <obj_property name="ElementShortName">w_test3</obj_property>
+      <obj_property name="ObjectShortName">w_test3</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/mems_pdm_tb/cic_decimation_inst/w_test4">
+      <obj_property name="ElementShortName">w_test4</obj_property>
+      <obj_property name="ObjectShortName">w_test4</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
 </wave_config>
