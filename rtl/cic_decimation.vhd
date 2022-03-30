@@ -55,7 +55,7 @@ architecture Behavioral of cic_decimation is
     signal r_decimated_signal  : signed(c_CIC_REG_MAX downto 0) := (others => '0');
 
     signal w_integrators : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES)-1 downto 0) := (others => '0');
-    signal w_combs       : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES)-1 downto 0) := (others => '0');
+    signal r_combs       : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES)-1 downto 0) := (others => '0');
 
     -- TODO: remove
     signal w_test_diff       : integer := 1;
@@ -126,7 +126,7 @@ begin
         if (r_decimator_clk'event and r_decimator_clk = '1') then
             for STAGE in 1 to c_CIC_STAGES loop
                 if (STAGE = 1) then
-                    w_combs(c_CIC_BIT_DEPTH-1 downto 0) <= r_decimated_signal - r_comb_delays((c_CIC_BIT_DEPTH*c_CIC_DIFF_DELAY)-1 downto (c_CIC_DIFF_DELAY-1)*c_CIC_BIT_DEPTH);
+                    r_combs(c_CIC_BIT_DEPTH-1 downto 0) <= r_decimated_signal - r_comb_delays((c_CIC_BIT_DEPTH*c_CIC_DIFF_DELAY)-1 downto (c_CIC_DIFF_DELAY-1)*c_CIC_BIT_DEPTH);
                     for DEL in 1 to c_CIC_DIFF_DELAY loop
                         if DEL = 1 then
                             r_comb_delays(c_CIC_REG_MAX downto 0) <= r_decimated_signal;
@@ -137,12 +137,12 @@ begin
                 else
                     for DEL in 1 to c_CIC_DIFF_DELAY loop
                         if DEL = 1 then
-                            r_comb_delays(((DEL+((STAGE-1)*c_CIC_DIFF_DELAY))*c_CIC_BIT_DEPTH)-1 downto (DEL+((STAGE-1)*c_CIC_DIFF_DELAY)-1)*c_CIC_BIT_DEPTH) <= w_combs(((STAGE-1)*c_CIC_BIT_DEPTH)-1 downto (STAGE-2)*c_CIC_BIT_DEPTH);
+                            r_comb_delays(((DEL+((STAGE-1)*c_CIC_DIFF_DELAY))*c_CIC_BIT_DEPTH)-1 downto (DEL+((STAGE-1)*c_CIC_DIFF_DELAY)-1)*c_CIC_BIT_DEPTH) <= r_combs(((STAGE-1)*c_CIC_BIT_DEPTH)-1 downto (STAGE-2)*c_CIC_BIT_DEPTH);
                         else
                             r_comb_delays(((DEL+((STAGE-1)*c_CIC_DIFF_DELAY))*c_CIC_BIT_DEPTH)-1 downto (DEL+((STAGE-1)*c_CIC_DIFF_DELAY)-1)*c_CIC_BIT_DEPTH) <= r_comb_delays((((DEL-1)+((STAGE-1)*c_CIC_DIFF_DELAY))*c_CIC_BIT_DEPTH)-1 downto ((((DEL-1)+((STAGE-1)*c_CIC_DIFF_DELAY))-1)*c_CIC_BIT_DEPTH) );
                         end if;
                     end loop;
-                    w_combs((STAGE*c_CIC_BIT_DEPTH)-1 downto ((STAGE-1)*c_CIC_BIT_DEPTH)) <= w_combs((((STAGE-1)*c_CIC_BIT_DEPTH)-1) downto (STAGE-2)*c_CIC_BIT_DEPTH) - r_comb_delays(((STAGE*c_CIC_DIFF_DELAY)*c_CIC_BIT_DEPTH)-1 downto ((STAGE*c_CIC_DIFF_DELAY)-1)*c_CIC_BIT_DEPTH);
+                    r_combs((STAGE*c_CIC_BIT_DEPTH)-1 downto ((STAGE-1)*c_CIC_BIT_DEPTH)) <= r_combs((((STAGE-1)*c_CIC_BIT_DEPTH)-1) downto (STAGE-2)*c_CIC_BIT_DEPTH) - r_comb_delays(((STAGE*c_CIC_DIFF_DELAY)*c_CIC_BIT_DEPTH)-1 downto ((STAGE*c_CIC_DIFF_DELAY)-1)*c_CIC_BIT_DEPTH);
                 end if;
             end loop;
         end if;
@@ -150,5 +150,5 @@ begin
 
 
     -- TODO:
-    o_recovered_waveform <= w_combs((c_CIC_BIT_DEPTH * c_CIC_STAGES) - 1 downto (c_CIC_BIT_DEPTH * c_CIC_STAGES) - c_OUTPUT_BIT_DEPTH);
+    o_recovered_waveform <= r_combs((c_CIC_BIT_DEPTH * c_CIC_STAGES) - 1 downto (c_CIC_BIT_DEPTH * c_CIC_STAGES) - c_OUTPUT_BIT_DEPTH);
 end Behavioral;
