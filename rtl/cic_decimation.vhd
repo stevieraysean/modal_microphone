@@ -33,45 +33,36 @@ end cic_decimation;
 
 architecture Behavioral of cic_decimation is
 
-    constant c_CIC_INPUT_BIT_DEPTH    : integer := 2;
+    constant c_CIC_INPUT_BIT_DEPTH    : integer := 1;
     constant c_CIC_DECIMATION_RATE    : integer := 16;
     constant c_CIC_DIFF_DELAY         : integer := 1;
     constant c_CIC_STAGES             : integer := 6;
-
-    -- TODO: diff value for bit-width and register (downto..) size
-    constant c_CIC_BIT_DEPTH          : integer := integer( ceil(real(c_CIC_STAGES) * LOG2(real(c_CIC_DECIMATION_RATE * c_CIC_DIFF_DELAY)) + real(c_CIC_INPUT_BIT_DEPTH )));
+    constant c_CIC_BIT_DEPTH          : integer := integer( ceil(real(c_CIC_STAGES) * 
+        LOG2(real(c_CIC_DECIMATION_RATE * c_CIC_DIFF_DELAY)) + real(c_CIC_INPUT_BIT_DEPTH )));
     constant c_CIC_REG_MAX            : integer := c_CIC_BIT_DEPTH - 1;
     constant c_OUTPUT_BIT_DEPTH       : integer := 24;
     
     signal r_pdm_buff          : std_logic := '0';
-
     signal r_pdm               : signed(c_CIC_REG_MAX downto 0):= (others => '0');
-    --signal r_pdm_buff          : signed(c_CIC_REG_MAX downto 0):= (others => '0');
-
-    signal r_integrator_delays : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES)-1 downto 0)                    := (others => '0');
-    signal r_comb_delays       : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES * c_CIC_DIFF_DELAY)-1 downto 0) := (others => '0');
     signal r_decimator_counter : unsigned(6 downto 0) := (others => '0');
     signal r_decimator_clk     : std_logic := '0';
     signal r_decimated_signal  : signed(c_CIC_REG_MAX downto 0) := (others => '0');
 
-    signal w_integrators : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES)-1 downto 0) := (others => '0');
-    signal w_combs       : signed((c_CIC_BIT_DEPTH * c_CIC_STAGES)-1 downto 0) := (others => '0');
+    type t_cic_stage_array is array (0 to c_CIC_STAGES-1) of signed(c_CIC_REG_MAX downto 0);
+    signal r_combs             : t_cic_stage_array := (others => to_signed(0, (c_CIC_BIT_DEPTH)));
+    signal r_integrator_delays : t_cic_stage_array := (others => to_signed(0, (c_CIC_BIT_DEPTH)));
+    signal w_integrators       : t_cic_stage_array := (others => to_signed(0, (c_CIC_BIT_DEPTH)));
 
-    -- TODO: remove
-    signal w_test_diff       : integer := 1;
-    signal w_test_i       : integer := 2;
-    signal w_test_j       : integer := 1;
-    signal w_test1       : integer := 0;
-    signal w_test2       : integer := 0;
-    signal w_test3       : integer := 0;
-    signal w_test4       : integer := 0;
+    type t_comb_delay_array is array (0 to c_CIC_STAGES-1, 0 to c_CIC_DIFF_DELAY-1) of signed(c_CIC_REG_MAX downto 0);
+    signal r_comb_delays : t_comb_delay_array := (others => (others => to_signed(0, (c_CIC_BIT_DEPTH))));
 
 begin
+    -- PDM Input
     process_r_pdm : PROCESS (i_clk)
     begin
         if (i_clk'event and i_clk = '1') then
             -- cast PDM 0/1 input to -1/1
-
+            -- TODO: double buffer?
             r_pdm_buff <= i_pdm;
 
             if (r_pdm_buff = '1') then
@@ -80,25 +71,26 @@ begin
                 r_pdm <= to_signed(-1, (c_CIC_BIT_DEPTH));
             end if;
 
-            r_integrator_delays(c_CIC_REG_MAX downto 0) <= w_integrators(c_CIC_REG_MAX downto 0);
-
+            r_integrator_delays(0) <= w_integrators(0);
         end if;
     end process;
-    w_integrators(c_CIC_REG_MAX downto 0) <= r_integrator_delays(c_CIC_REG_MAX downto 0) + r_pdm;--(c_CIC_REG_MAX downto 0); 
+
+    w_integrators(0) <= r_integrator_delays(0) + r_pdm;
 
     -- Integration Stages
-    g_GENERATE_w_integrators: for ii in 2 to c_CIC_STAGES generate
+    -- TODO: not sure this is the way, but it works for reg and wire logic
+    g_GENERATE_w_integrators: for STAGE in 1 to c_CIC_STAGES-1 generate
         process_integrator : PROCESS (i_clk)
         begin
             if (i_clk'event and i_clk = '1') then
-                r_integrator_delays((ii*c_CIC_BIT_DEPTH)-1 downto (ii-1)*c_CIC_BIT_DEPTH) <= w_integrators((ii*c_CIC_BIT_DEPTH)-1 downto (ii-1)*c_CIC_BIT_DEPTH);
+                r_integrator_delays(STAGE) <= w_integrators(STAGE);
             end if;
         end process;
-        w_integrators((ii*c_CIC_BIT_DEPTH)-1 downto ((ii-1)*c_CIC_BIT_DEPTH)) <= r_integrator_delays((ii*c_CIC_BIT_DEPTH)-1 downto (ii-1)*c_CIC_BIT_DEPTH) + w_integrators(((ii-1)*c_CIC_BIT_DEPTH)-1 downto (ii-2)*c_CIC_BIT_DEPTH);
+        w_integrators(STAGE) <= r_integrator_delays(STAGE) + w_integrators(STAGE-1);
     end generate g_GENERATE_w_integrators; 
 
     -- Decimation Stage
-    process_decimate : PROCESS (i_clk)
+    process_decimator_clock : PROCESS (i_clk)
     begin
         if (i_clk'event and i_clk = '1') then
             r_decimator_counter <= r_decimator_counter + 1;
@@ -116,49 +108,39 @@ begin
     process_decimated_signals : PROCESS (r_decimator_clk)
     begin
         if (r_decimator_clk'event and r_decimator_clk = '1') then
-            r_decimated_signal <= w_integrators((c_CIC_BIT_DEPTH * c_CIC_STAGES)-1 downto (c_CIC_BIT_DEPTH * c_CIC_STAGES) - (c_CIC_BIT_DEPTH));
+            r_decimated_signal <= w_integrators(c_CIC_STAGES-1);
         end if;
     end process;
 
-
-    g_GENERATE_w_initial_comb_delays: for DEL in 1 to c_CIC_DIFF_DELAY generate
+    -- Decimation Comb Filters
+    process_comb_filters : PROCESS (r_decimator_clk)
     begin
-        process_decimated_signals : PROCESS (r_decimator_clk)
-        begin
-            if (r_decimator_clk'event and r_decimator_clk = '1') then
-                if DEL = 1 then
-                    r_comb_delays(c_CIC_REG_MAX downto 0) <= r_decimated_signal;
+        if (r_decimator_clk'event and r_decimator_clk = '1') then
+            for STAGE in 0 to c_CIC_STAGES-1 loop
+                if (STAGE = 0) then
+                    r_combs(STAGE) <= r_decimated_signal - r_comb_delays(STAGE, c_CIC_DIFF_DELAY-1 );
+                    for DEL in 0 to c_CIC_DIFF_DELAY-1 loop
+                        if DEL = 0 then
+                            r_comb_delays(STAGE, DEL) <= r_decimated_signal;
+                        else
+                            r_comb_delays(STAGE, DEL) <= r_comb_delays(STAGE, DEL-1);
+                        end if;
+                    end loop;
                 else
-                    r_comb_delays((DEL*c_CIC_BIT_DEPTH)-1 downto ((DEL-1)*c_CIC_BIT_DEPTH)) <= r_comb_delays(((DEL-1)*c_CIC_BIT_DEPTH)-1 downto ((DEL-2)*c_CIC_BIT_DEPTH));
+                    for DEL in 0 to c_CIC_DIFF_DELAY-1 loop
+                        if DEL = 0 then
+                            r_comb_delays(STAGE, DEL) <= r_combs(STAGE-1);
+                        else
+                            r_comb_delays(STAGE, DEL) <= r_comb_delays(STAGE, DEL-1);
+                        end if;
+                    end loop;
+                    r_combs(STAGE) <= r_combs(STAGE-1) - r_comb_delays(STAGE, c_CIC_DIFF_DELAY-1 );
                 end if;
-            end if; 
-        end process;
-    end generate g_GENERATE_w_initial_comb_delays;
+            end loop;
+        end if;
+    end process;
 
-    w_combs(c_CIC_BIT_DEPTH-1 downto 0) <= r_decimated_signal - r_comb_delays((c_CIC_BIT_DEPTH*c_CIC_DIFF_DELAY)-1 downto (c_CIC_DIFF_DELAY-1)*c_CIC_BIT_DEPTH);
-
-    -- Comb Stages
-    g_GENERATE_w_combs: for STAGE in 2 to c_CIC_STAGES generate
-    begin
-        g_GENERATE_w_comb_delays: for DEL in 1 to c_CIC_DIFF_DELAY generate
-        begin
-
-            process_combs : PROCESS (r_decimator_clk)
-            begin
-                if (r_decimator_clk'event and r_decimator_clk = '1') then
-                    if DEL = 1 then
-                        r_comb_delays(((DEL+((STAGE-1)*c_CIC_DIFF_DELAY))*c_CIC_BIT_DEPTH)-1 downto (DEL+((STAGE-1)*c_CIC_DIFF_DELAY)-1)*c_CIC_BIT_DEPTH) <= w_combs(((STAGE-1)*c_CIC_BIT_DEPTH)-1 downto (STAGE-2)*c_CIC_BIT_DEPTH);
-                    else
-                        r_comb_delays(((DEL+((STAGE-1)*c_CIC_DIFF_DELAY))*c_CIC_BIT_DEPTH)-1 downto (DEL+((STAGE-1)*c_CIC_DIFF_DELAY)-1)*c_CIC_BIT_DEPTH) <= r_comb_delays((((DEL-1)+((STAGE-1)*c_CIC_DIFF_DELAY))*c_CIC_BIT_DEPTH)-1 downto ((((DEL-1)+((STAGE-1)*c_CIC_DIFF_DELAY))-1)*c_CIC_BIT_DEPTH) );
-                    end if;
-                end if;
-            end process;
-
-        end generate g_GENERATE_w_comb_delays;
-        w_combs((STAGE*c_CIC_BIT_DEPTH)-1 downto ((STAGE-1)*c_CIC_BIT_DEPTH)) <= w_combs((((STAGE-1)*c_CIC_BIT_DEPTH)-1) downto (STAGE-2)*c_CIC_BIT_DEPTH) - r_comb_delays(((STAGE*c_CIC_DIFF_DELAY)*c_CIC_BIT_DEPTH)-1 downto ((STAGE*c_CIC_DIFF_DELAY)-1)*c_CIC_BIT_DEPTH);
-
-    end generate g_GENERATE_w_combs;
-
-    -- TODO:
-    o_recovered_waveform <= w_combs((c_CIC_BIT_DEPTH * c_CIC_STAGES) - c_CIC_BIT_DEPTH + c_OUTPUT_BIT_DEPTH downto (c_CIC_BIT_DEPTH * c_CIC_STAGES)-  c_CIC_REG_MAX);
+    -- CIC Filter Output
+    -- grab the MSB's of the last comb stage
+    o_recovered_waveform <= r_combs(c_CIC_STAGES-1)(c_CIC_BIT_DEPTH - 1 downto c_CIC_BIT_DEPTH - c_OUTPUT_BIT_DEPTH);
 end Behavioral;
