@@ -49,9 +49,9 @@ architecture Behavioral of cic_decimation is
     signal r_decimated_signal  : signed(c_CIC_REG_MAX downto 0) := (others => '0');
 
     type t_cic_stage_array is array (0 to c_CIC_STAGES-1) of signed(c_CIC_REG_MAX downto 0);
-    signal r_combs             : t_cic_stage_array:= (others => to_signed(0, (c_CIC_BIT_DEPTH)));
-    signal r_integrator_delays : t_cic_stage_array:= (others => to_signed(0, (c_CIC_BIT_DEPTH)));
-    signal w_integrators       : t_cic_stage_array:= (others => to_signed(0, (c_CIC_BIT_DEPTH)));
+    signal r_combs             : t_cic_stage_array := (others => to_signed(0, (c_CIC_BIT_DEPTH)));
+    signal r_integrator_delays : t_cic_stage_array := (others => to_signed(0, (c_CIC_BIT_DEPTH)));
+    signal w_integrators       : t_cic_stage_array := (others => to_signed(0, (c_CIC_BIT_DEPTH)));
 
     type t_comb_delay_array is array (0 to c_CIC_STAGES-1, 0 to c_CIC_DIFF_DELAY-1) of signed(c_CIC_REG_MAX downto 0);
     signal r_comb_delays : t_comb_delay_array := (others => (others => to_signed(0, (c_CIC_BIT_DEPTH))));
@@ -62,7 +62,7 @@ begin
     begin
         if (i_clk'event and i_clk = '1') then
             -- cast PDM 0/1 input to -1/1
-
+            -- TODO: double buffer?
             r_pdm_buff <= i_pdm;
 
             if (r_pdm_buff = '1') then
