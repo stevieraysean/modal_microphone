@@ -112,13 +112,18 @@ begin
         end if;
     end process;
 
+    r_combs(0) <= r_decimated_signal - r_comb_delays(0, c_CIC_DIFF_DELAY-1 );
+
+    g_GENERATE_w_combs: for STAGE in 1 to c_CIC_STAGES-1 generate
+        r_combs(STAGE) <= r_combs(STAGE-1) - r_comb_delays(STAGE, c_CIC_DIFF_DELAY-1);
+    end generate g_GENERATE_w_combs; 
+
     -- Decimation Comb Filters
     process_comb_filters : PROCESS (r_decimator_clk)
     begin
         if (r_decimator_clk'event and r_decimator_clk = '1') then
             for STAGE in 0 to c_CIC_STAGES-1 loop
                 if (STAGE = 0) then
-                    r_combs(STAGE) <= r_decimated_signal - r_comb_delays(STAGE, c_CIC_DIFF_DELAY-1 );
                     for DEL in 0 to c_CIC_DIFF_DELAY-1 loop
                         if DEL = 0 then
                             r_comb_delays(STAGE, DEL) <= r_decimated_signal;
@@ -134,7 +139,6 @@ begin
                             r_comb_delays(STAGE, DEL) <= r_comb_delays(STAGE, DEL-1);
                         end if;
                     end loop;
-                    r_combs(STAGE) <= r_combs(STAGE-1) - r_comb_delays(STAGE, c_CIC_DIFF_DELAY-1 );
                 end if;
             end loop;
         end if;
