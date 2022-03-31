@@ -10,7 +10,7 @@ architecture Behavioral of mems_pdm_tb is
     component cic_decimation is
         port (
             i_clk       : in std_logic;
-            i_pdm       : in std_logic
+            i_CIC_IN    : in std_logic
         );
     end component cic_decimation;
 
@@ -69,6 +69,6 @@ begin
     cic_decimation_inst : cic_decimation
         port map (
             i_clk       => r_Clock,
-            i_pdm       => r_adc
+            i_CIC_IN    => r_adc
         );
 end Behavioral;
