@@ -37,7 +37,8 @@ entity cic_decimation is
     port ( 
         i_clk     : in STD_LOGIC;
         i_CIC_IN  : in STD_LOGIC;
-        o_CIC_OUT : out SIGNED(g_OUTPUT_BITDEPTH-1 downto 0) := (others => '0')
+        o_clk_dec : out STD_LOGIC;
+        o_CIC_OUT : out STD_LOGIC_VECTOR(g_OUTPUT_BITDEPTH-1 downto 0) := (others => '0')
         );
 end cic_decimation;
 
@@ -147,7 +148,8 @@ begin
         end if;
     end process;
 
+    o_clk_dec <= r_decimator_clk;
     -- CIC Filter Output
     -- grab the MSB's of the last comb stage
-    o_CIC_OUT <= w_combs(g_STAGES-1)(c_CIC_BIT_DEPTH - 1 downto c_CIC_BIT_DEPTH - g_OUTPUT_BITDEPTH);
+    o_CIC_OUT <= STD_LOGIC_VECTOR(w_combs(g_STAGES-1)(c_CIC_BIT_DEPTH - 1 downto c_CIC_BIT_DEPTH - g_OUTPUT_BITDEPTH));
 end Behavioral;
