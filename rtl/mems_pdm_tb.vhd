@@ -45,10 +45,10 @@ begin
             v_tstep := v_tstep + c_CLOCK_PERIOD;
             
             -- Chirp signal
-            if c_SINE_FREQ_HZ > 20000.0 then
+            if c_SINE_FREQ_HZ > 24000.0 then
                 v_amp := 0.0;
             else
-                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 0.05;
+                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 1.0;
             end if;
 
             v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * c_SINE_FREQ_HZ);

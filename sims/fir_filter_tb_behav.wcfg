@@ -12,34 +12,50 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
-      <ZoomEndTime time="48.900000001 ms"></ZoomEndTime>
-      <Cursor1Time time="296.687717040 ms"></Cursor1Time>
+      <ZoomEndTime time="31.700000001 ms"></ZoomEndTime>
+      <Cursor1Time time="0.000000000 ms"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="212"></NameColumnWidth>
-      <ValueColumnWidth column_width="91"></ValueColumnWidth>
+      <ValueColumnWidth column_width="83"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="4" />
-   <wvobject fp_name="/fir_filter_tb/r_Clock" type="logic">
-      <obj_property name="ElementShortName">r_Clock</obj_property>
-      <obj_property name="ObjectShortName">r_Clock</obj_property>
+   <WVObjectSize size="7" />
+   <wvobject type="logic" fp_name="/fir_filter_tb/r_clock">
+      <obj_property name="ElementShortName">r_clock</obj_property>
+      <obj_property name="ObjectShortName">r_clock</obj_property>
    </wvobject>
-   <wvobject fp_name="/fir_filter_tb/r_adc" type="logic">
+   <wvobject type="logic" fp_name="/fir_filter_tb/r_clock_div">
+      <obj_property name="ElementShortName">r_clock_div</obj_property>
+      <obj_property name="ObjectShortName">r_clock_div</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/fir_filter_tb/r_adc">
       <obj_property name="ElementShortName">r_adc</obj_property>
       <obj_property name="ObjectShortName">r_adc</obj_property>
    </wvobject>
-   <wvobject fp_name="/fir_filter_tb/r_fir_output" type="array">
+   <wvobject type="array" fp_name="/fir_filter_tb/r_sine_wave">
+      <obj_property name="ElementShortName">r_sine_wave[23:0]</obj_property>
+      <obj_property name="ObjectShortName">r_sine_wave[23:0]</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/fir_filter_tb/r_fir_output">
       <obj_property name="ElementShortName">r_fir_output[23:0]</obj_property>
       <obj_property name="ObjectShortName">r_fir_output[23:0]</obj_property>
       <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
       <obj_property name="CellHeight">100</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/fir_filter_tb/r_sine_wave" type="array">
-      <obj_property name="ElementShortName">r_sine_wave[23:0]</obj_property>
-      <obj_property name="ObjectShortName">r_sine_wave[23:0]</obj_property>
+   <wvobject type="array" fp_name="/fir_filter_tb/r_fir_mul_mux_output">
+      <obj_property name="ElementShortName">r_fir_mul_mux_output[23:0]</obj_property>
+      <obj_property name="ObjectShortName">r_fir_mul_mux_output[23:0]</obj_property>
       <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
       <obj_property name="CellHeight">100</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/fir_filter_tb/fir_filter_mul_mux_inst/r_mults">
+      <obj_property name="ElementShortName">r_mults[0:17][47:0]</obj_property>
+      <obj_property name="ObjectShortName">r_mults[0:17][47:0]</obj_property>
    </wvobject>
 </wave_config>

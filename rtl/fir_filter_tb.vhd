@@ -17,21 +17,55 @@ architecture Behavioral of fir_filter_tb is
         );
     end component fir_filter;
 
-    constant c_CLOCK_FREQ_HZ : real := 192000.0; -- 3.072 MHz
+    component fir_filter_mul_mux is
+        port (
+            i_clk_div      : in std_logic;
+            i_clk          : in std_logic;
+            i_SIGNAL_IN    : in std_logic_vector(23 downto 0);
+            o_SIGNAL_OUT   : out std_logic_vector(23 downto 0)
+        );
+    end component fir_filter_mul_mux;
+
+    constant c_SIM_BIT_DEPTH : integer := 24;
+    constant c_CLOCK_DIV : integer := 128;
+
+    constant c_CLOCK_FREQ_HZ : real := 3072000.0; --24576000.0; -- 3.072 MHz * 8
     constant c_CLOCK_PERIOD : real := (1.0 / c_CLOCK_FREQ_HZ);
     constant c_CLOCK_PERIOD_HALF : time := (c_CLOCK_PERIOD / 2) * 1 sec;
-    constant c_SIM_BIT_DEPTH : integer := 24;
 
-    signal r_Clock : std_logic := '0';
+    constant c_CLOCK_PERIOD_DIV : real := ((1.0 * c_CLOCK_DIV)/ (c_CLOCK_FREQ_HZ));
+
+    signal r_clock     : std_logic := '0';
+    signal r_clock_div : std_logic := '0';
+
+    signal r_clock_counter : integer := 0;
+
     signal r_adc : STD_LOGIC := '0';
-    signal r_fir_output : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
     signal r_sine_wave : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
+
+    signal r_fir_output         : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
+    signal r_fir_mul_mux_output : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
 
 begin        
     
-    r_Clock <= not r_Clock after c_CLOCK_PERIOD_HALF; --50 ns
+    r_clock <= not r_clock after c_CLOCK_PERIOD_HALF; --50 ns
 
-    sine_wave : process(r_Clock)
+    clock : process(r_clock)
+    begin
+        if (r_clock = '1' and r_clock'EVENT) then
+            r_clock_counter <= r_clock_counter + 1;
+            if r_clock_counter >= c_CLOCK_DIV then
+                r_clock_counter <= 0;
+                r_clock_div <= '1';
+            end if;
+            if r_clock_counter = (c_CLOCK_DIV/2) then
+                r_clock_div <= '0';
+            end if;
+        end if;
+    end process;
+
+
+    sine_wave : process(r_clock_div)
         variable v_tstep : real := 0.0;
         variable v_analog_sig : real := 0.0;
         variable v_amp : real := 0.95; -- prevent clipping, TODO: fix & remove
@@ -42,14 +76,15 @@ begin
 
         variable c_SINE_FREQ_HZ: real := 1.0;
     begin
-        if (r_Clock = '1' and r_Clock'EVENT) then
-            v_tstep := v_tstep + c_CLOCK_PERIOD;
+        if (r_clock_div = '1' and r_clock_div'EVENT) then
+            v_tstep := v_tstep + c_CLOCK_PERIOD_DIV;
             
             -- Chirp signal
-            if c_SINE_FREQ_HZ > 96000.0 then
+            if c_SINE_FREQ_HZ > 24000.0 then
                 v_amp := 0.0;
             else
-                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 1.0;
+                -- report ("ROW = "  & to_string(r_fir_output)); //TODO: how?
+                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 2.0;
             end if;
 
             v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * c_SINE_FREQ_HZ);
@@ -71,11 +106,18 @@ begin
     end process;
     
     fir_filter_inst : fir_filter
-    port map (
-        i_clk        => r_Clock,
-        i_SIGNAL_IN  => r_sine_wave,
-        o_SIGNAL_OUT => r_fir_output
-    );
+        port map (
+            i_clk        => r_clock_div,
+            i_SIGNAL_IN  => r_sine_wave,
+            o_SIGNAL_OUT => r_fir_output
+        );
 
+    fir_filter_mul_mux_inst : fir_filter_mul_mux
+        port map (
+            i_clk        => r_clock,
+            i_clk_div    => r_clock_div,
+            i_SIGNAL_IN  => r_sine_wave,
+            o_SIGNAL_OUT => r_fir_mul_mux_output
+        );
 end Behavioral;
 

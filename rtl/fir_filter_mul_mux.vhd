@@ -26,37 +26,37 @@ use IEEE.MATH_REAL.ALL;
 
 use work.data_types.ALL;
 
-entity fir_filter is
+entity fir_filter_mul_mux is
     generic (
         g_BITDEPTH           : integer := 24;
-        --g_COEFFICIENTS       : array_of_integers := ( 131224, 0, -125245, 0, 166750, 0, -202424, 0, 226313, 1048575, 226313, 0, -202424, 0, 166750, 0, -125245, 0, 131224); -- TODO: half-band w/  zeros 
-        --g_COEFFICIENTS       : array_of_integers := (176, 0, -299, 0, 1023,  817, 1023, 0, -299, 0, 176);
+        --test g_COEFFICIENTS       : array_of_integers := (175599, -346118, -485164, 616495, 912270, -1212929, -1685061, 2214040, 3064533, -4217038, -6341839, 10925493, 33554431, 33554431, 10925493, -6341839, -4217038, 3064533, 2214040, -1685061, -1212929, 912270, 616495, -485164, -346118, 175599);
+        
         g_COEFFICIENTS       : array_of_integers := (7144, 0, -12554, 0, 24430, 0, -49872, 0, 164898, 262143, 164898, 0, -49872, 0, 24430, 0, -12554, 0, 7144);
-        g_DECIMATION_RATE    : integer := 2
+        g_DECIMATION_RATE    : integer := 2;
+        g_CLOCK_DIVIDER      : integer := 128
         );
     Port ( 
         i_SIGNAL_IN  : in STD_LOGIC_VECTOR (g_BITDEPTH-1 downto 0);
         o_SIGNAL_OUT : out STD_LOGIC_VECTOR (g_BITDEPTH-1 downto 0);
+        i_clk_div    : in STD_LOGIC;
         i_clk        : in STD_LOGIC
         );
 
     constant g_STAGES : integer := g_COEFFICIENTS'LENGTH-1;
-end fir_filter;
+end fir_filter_mul_mux;
 
-architecture Behavioral of fir_filter is
+architecture Behavioral of fir_filter_mul_mux is
 
     type t_fir_stage is array (0 to g_STAGES-1) of signed(g_BITDEPTH-1 downto 0);
-    type t_mult_stage is array (0 to g_STAGES-1) of signed((g_BITDEPTH * 2)-1 downto 0);
-
+    
     signal r_taps    : t_fir_stage  := (others => to_signed(0, g_BITDEPTH));
-    signal r_mults   : t_mult_stage := (others => to_signed(0, g_BITDEPTH*2));
-    signal r_sums    : t_mult_stage := (others => to_signed(0, g_BITDEPTH*2));
+    signal r_counter : integer := 0;
 
 begin
     -- delays
-    process_taps : PROCESS (i_clk)
+    process_delays : PROCESS (i_clk_div)
     begin
-        if (i_clk'event and i_clk = '1') then
+        if (i_clk_div'event and i_clk_div = '1') then
             for STAGE in 0 to g_STAGES-1 loop
                 if STAGE = 0 then
                     r_taps(STAGE) <= signed(i_SIGNAL_IN);
@@ -67,18 +67,22 @@ begin
         end if;
     end process;
 
-    -- multiplies
-    g_GENERATE_mult : for STAGE in 0 to g_STAGES-1 generate
-        r_mults(STAGE)  <= r_taps(STAGE) * g_COEFFICIENTS(STAGE+1);
-    end generate g_GENERATE_mult;
+    process_counter : PROCESS (i_clk)
+        variable sum : signed((g_BITDEPTH*2)-1 downto 0) := (others => '0');
+    begin
+        if (i_clk'event and i_clk = '1') then
+            if r_counter < g_STAGES then
+                sum := sum + (r_taps(r_counter) * g_COEFFICIENTS(r_counter));
+            end if;
 
-    -- sums
-    r_sums(0)  <= (signed(i_SIGNAL_IN) * g_COEFFICIENTS(0)) + r_mults(0);
-    g_GENERATE_sum : for STAGE in 1 to g_STAGES-1 generate
-        r_sums(STAGE)  <= r_sums(STAGE-1) + r_mults(STAGE);
-    end generate g_GENERATE_sum;
-
-    --o_SIGNAL_OUT <= STD_LOGIC_VECTOR(r_sums(g_STAGES-1)(35 downto 12));
-    o_SIGNAL_OUT <= STD_LOGIC_VECTOR(r_sums(g_STAGES-1)(42 downto 42-23));
+            if r_counter = g_CLOCK_DIVIDER then
+                r_counter <= 0;
+                o_SIGNAL_OUT <= STD_LOGIC_VECTOR(sum(47-5 downto 24-5));
+                sum := (others => '0');
+            else
+                r_counter <= r_counter + 1;
+            end if;
+        end if;
+    end process;
 
 end Behavioral;
