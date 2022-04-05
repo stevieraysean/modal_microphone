@@ -47,7 +47,7 @@ end fir_filter_mul_mux;
 
 architecture Behavioral of fir_filter_mul_mux is
 
-    type t_fir_stage is array (0 to g_STAGES-1) of signed(g_BITDEPTH-1 downto 0);
+    type t_fir_stage is array (0 to g_STAGES) of signed(g_BITDEPTH-1 downto 0);
     
     signal r_taps    : t_fir_stage  := (others => to_signed(0, g_BITDEPTH));
     signal r_counter : integer := 0;
@@ -57,7 +57,7 @@ begin
     process_delays : PROCESS (i_clk_div)
     begin
         if (i_clk_div'event and i_clk_div = '1') then
-            for STAGE in 0 to g_STAGES-1 loop
+            for STAGE in 0 to g_STAGES loop
                 if STAGE = 0 then
                     r_taps(STAGE) <= signed(i_SIGNAL_IN);
                 else
