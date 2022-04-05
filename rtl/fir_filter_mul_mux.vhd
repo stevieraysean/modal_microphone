@@ -71,7 +71,7 @@ begin
         variable sum : signed((g_BITDEPTH*2)-1 downto 0) := (others => '0');
     begin
         if (i_clk'event and i_clk = '1') then
-            if r_counter < g_STAGES then
+            if r_counter <= g_STAGES then
                 sum := sum + (r_taps(r_counter) * g_COEFFICIENTS(r_counter));
             end if;
 
@@ -84,5 +84,7 @@ begin
             end if;
         end if;
     end process;
+
+    
 
 end Behavioral;
