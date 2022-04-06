@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="fir_filter_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="data_types" />
+            <top_module name="fir_filter_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
+      <ZoomEndTime time="12.760000001 ms"></ZoomEndTime>
+      <Cursor1Time time="58.326836360 ms"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="212"></NameColumnWidth>
+      <ValueColumnWidth column_width="79"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="6" />
+   <wvobject type="logic" fp_name="/fir_filter_tb/r_clock">
+      <obj_property name="ElementShortName">r_clock</obj_property>
+      <obj_property name="ObjectShortName">r_clock</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/fir_filter_tb/r_clock_div">
+      <obj_property name="ElementShortName">r_clock_div</obj_property>
+      <obj_property name="ObjectShortName">r_clock_div</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/fir_filter_tb/r_sine_wave">
+      <obj_property name="ElementShortName">r_sine_wave[23:0]</obj_property>
+      <obj_property name="ObjectShortName">r_sine_wave[23:0]</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/fir_filter_tb/r_fir_output">
+      <obj_property name="ElementShortName">r_fir_output[23:0]</obj_property>
+      <obj_property name="ObjectShortName">r_fir_output[23:0]</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/fir_filter_tb/r_fir_mul_mux_output">
+      <obj_property name="ElementShortName">r_fir_mul_mux_output[23:0]</obj_property>
+      <obj_property name="ObjectShortName">r_fir_mul_mux_output[23:0]</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="AnalogYRangeType">ANALOG_YRANGETYPE_AUTO</obj_property>
+      <obj_property name="AnalogYRangeMin">-8000000.000000</obj_property>
+      <obj_property name="AnalogYRRangeMax">8000000.000000</obj_property>
+      <obj_property name="AnalogInterpolation">ANALOG_INTERPOLATION_LINEAR</obj_property>
+      <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
+      <obj_property name="AnalogHorizLine">0.000000</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/fir_filter_tb/fir_filter_mul_mux_inst/r_counter">
+      <obj_property name="ElementShortName">r_counter</obj_property>
+      <obj_property name="ObjectShortName">r_counter</obj_property>
+   </wvobject>
+</wave_config>

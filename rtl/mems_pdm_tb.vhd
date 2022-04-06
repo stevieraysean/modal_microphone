@@ -3,16 +3,18 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.NUMERIC_STD.ALL;
 use IEEE.MATH_REAL.ALL;
 
+use work.data_types.ALL;
+
 entity mems_pdm_tb is
 end mems_pdm_tb;
 
 architecture Behavioral of mems_pdm_tb is       
-    component cic_decimation is
+    component microphone_channel is
         port (
-            i_clk       : in std_logic;
-            i_CIC_IN    : in std_logic
+            i_clk : in std_logic;
+            i_pdm : in std_logic
         );
-    end component cic_decimation;
+    end component microphone_channel;
 
     constant c_CLOCK_FREQ_HZ : real := 3072000.0; -- 3.072 MHz
     constant c_CLOCK_PERIOD : real := (1.0 / c_CLOCK_FREQ_HZ);
@@ -21,6 +23,7 @@ architecture Behavioral of mems_pdm_tb is
 
     signal r_Clock : std_logic := '0';
     signal r_adc : STD_LOGIC := '0';
+    signal r_cic_output : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
     signal r_sine_wave : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
 
 begin        
@@ -42,10 +45,10 @@ begin
             v_tstep := v_tstep + c_CLOCK_PERIOD;
             
             -- Chirp signal
-            if c_SINE_FREQ_HZ > 20000.0 then
+            if c_SINE_FREQ_HZ > 24000.0 then
                 v_amp := 0.0;
             else
-                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 0.05;
+                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 1.0;
             end if;
 
             v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * c_SINE_FREQ_HZ);
@@ -66,9 +69,10 @@ begin
         end if;
     end process;
     
-    cic_decimation_inst : cic_decimation
+    microphone_channel_inst : microphone_channel
         port map (
-            i_clk       => r_Clock,
-            i_CIC_IN    => r_adc
+            i_clk     => r_Clock,
+            i_pdm    => r_adc
         );
+
 end Behavioral;
