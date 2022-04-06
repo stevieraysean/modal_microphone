@@ -31,6 +31,7 @@ entity microphone_channel is
     );
     Port ( 
         i_clk     : in STD_LOGIC;
+        i_clk_div : in STD_LOGIC;
         i_pdm     : in STD_LOGIC;       
         o_output  : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
     );
@@ -77,7 +78,7 @@ architecture Behavioral of microphone_channel is
 begin
     cic_decimation_inst : cic_decimation
         port map (
-            i_clk       => i_clk,
+            i_clk       => i_clk_div,
             i_CIC_IN    => i_pdm,
             o_clk_dec   => r_dec_clk,
             o_CIC_OUT   => r_cic_output
@@ -104,5 +105,5 @@ begin
             o_SIGNAL_OUT => r_fir_mul_mux_output
         );
 
-    o_output <= r_fir_mul_mux_output;
+    o_output <= r_fir_output;
 end Behavioral;

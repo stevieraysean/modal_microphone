@@ -29,7 +29,7 @@ architecture Behavioral of fir_filter_tb is
     constant c_SIM_BIT_DEPTH : integer := 24;
     constant c_CLOCK_DIV : integer := 128;
 
-    constant c_CLOCK_FREQ_HZ : real := 3072000.0; --24576000.0; -- 3.072 MHz * 8
+    constant c_CLOCK_FREQ_HZ : real := 24576000.0;
     constant c_CLOCK_PERIOD : real := (1.0 / c_CLOCK_FREQ_HZ);
     constant c_CLOCK_PERIOD_HALF : time := (c_CLOCK_PERIOD / 2) * 1 sec;
 

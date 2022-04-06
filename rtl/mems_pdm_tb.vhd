@@ -11,26 +11,50 @@ end mems_pdm_tb;
 architecture Behavioral of mems_pdm_tb is       
     component microphone_channel is
         port (
-            i_clk : in std_logic;
-            i_pdm : in std_logic
+            i_clk     : in std_logic;
+            i_clk_div : in std_logic;
+            i_pdm     : in std_logic
         );
     end component microphone_channel;
 
-    constant c_CLOCK_FREQ_HZ : real := 3072000.0; -- 3.072 MHz
+    constant c_CLOCK_FREQ_HZ : real := 24576000.0;
+    constant c_CLOCK_DIVIDER : integer := 8; -- 24.576MHz to 3.072MHz
     constant c_CLOCK_PERIOD : real := (1.0 / c_CLOCK_FREQ_HZ);
     constant c_CLOCK_PERIOD_HALF : time := (c_CLOCK_PERIOD / 2) * 1 sec;
+    constant c_CLOCK_DIV_PERIOD : real := (c_CLOCK_PERIOD * c_CLOCK_DIVIDER);
     constant c_SIM_BIT_DEPTH : integer := 24;
 
-    signal r_Clock : std_logic := '0';
+    signal r_clock           : std_logic := '0';
+    signal r_clock_div       : std_logic := '1';
+    signal r_clock_div_count : integer := 0;
+
     signal r_adc : STD_LOGIC := '0';
     signal r_cic_output : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
     signal r_sine_wave : STD_LOGIC_VECTOR((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
 
 begin        
     
-    r_Clock <= not r_Clock after c_CLOCK_PERIOD_HALF; --50 ns
+    r_clock <= not r_clock after c_CLOCK_PERIOD_HALF; --50 ns
 
-    sine_wave : process(r_Clock)
+    process (r_clock)
+    begin
+        if rising_edge(r_clock) then
+            r_clock_div_count <= r_clock_div_count + 1;
+
+            if r_clock_div_count = c_CLOCK_DIVIDER-1 then
+                r_clock_div <= '1';
+                r_clock_div_count <= 0;
+            else
+                if r_clock_div_count = (c_CLOCK_DIVIDER-1)/2 then
+                    r_clock_div <= '0';
+                end if;
+                r_clock_div_count <= r_clock_div_count + 1;
+            end if;
+        end if;
+    end process;
+
+
+    sine_wave : process(r_clock_div)
         variable v_tstep : real := 0.0;
         variable v_analog_sig : real := 0.0;
         variable v_amp : real := 0.95; -- prevent clipping, TODO: fix & remove
@@ -41,14 +65,14 @@ begin
 
         variable c_SINE_FREQ_HZ: real := 1.0;
     begin
-        if (r_Clock = '1') then
-            v_tstep := v_tstep + c_CLOCK_PERIOD;
+        if rising_edge(r_clock_div) then
+            v_tstep := v_tstep + c_CLOCK_DIV_PERIOD;
             
             -- Chirp signal
             if c_SINE_FREQ_HZ > 24000.0 then
                 v_amp := 0.0;
             else
-                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 1.0;
+                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 0.25;
             end if;
 
             v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * c_SINE_FREQ_HZ);
@@ -71,8 +95,9 @@ begin
     
     microphone_channel_inst : microphone_channel
         port map (
-            i_clk     => r_Clock,
-            i_pdm    => r_adc
+            i_clk     => r_clock,
+            i_clk_div => r_clock_div,
+            i_pdm     => r_adc
         );
 
 end Behavioral;

@@ -1,11 +1,11 @@
 ----------------------------------------------------------------------------------
 -- Company: 
--- Engineer: 
+-- Engineer: Sean Pierce
 -- 
 -- Create Date: 03/31/2022 08:04:59 PM
 -- Design Name: 
 -- Module Name: fir_filter - Behavioral
--- Project Name: 
+-- Project Name: modal_microphone
 -- Target Devices: 
 -- Tool Versions: 
 -- Description: FIR Filter
@@ -29,8 +29,7 @@ use work.data_types.ALL;
 entity fir_filter is
     generic (
         g_BITDEPTH           : integer := 24;
-        --g_COEFFICIENTS       : array_of_integers := ( 131224, 0, -125245, 0, 166750, 0, -202424, 0, 226313, 1048575, 226313, 0, -202424, 0, 166750, 0, -125245, 0, 131224); -- TODO: half-band w/  zeros 
-        --g_COEFFICIENTS       : array_of_integers := (176, 0, -299, 0, 1023,  817, 1023, 0, -299, 0, 176);
+        -- half band filter, calculated for zeros every other coefficient to save multipliers
         g_COEFFICIENTS       : array_of_integers := (7144, 0, -12554, 0, 24430, 0, -49872, 0, 164898, 262143, 164898, 0, -49872, 0, 24430, 0, -12554, 0, 7144);
         g_DECIMATION_RATE    : integer := 2
         );
@@ -78,7 +77,7 @@ begin
         r_sums(STAGE)  <= r_sums(STAGE-1) + r_mults(STAGE);
     end generate g_GENERATE_sum;
 
-    -- TODO: Calc bit growth, do roudning before truncation
+    -- TODO: Calc bit growth, do rounding before truncation
     o_SIGNAL_OUT <= STD_LOGIC_VECTOR(r_sums(g_STAGES)(42 downto 42-23));
 
 end Behavioral;
