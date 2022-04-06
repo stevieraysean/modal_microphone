@@ -54,7 +54,7 @@ architecture Behavioral of fir_filter is
 
 begin
     -- delays
-    process_taps : PROCESS (i_clk)
+    process (i_clk)
     begin
         if (i_clk'event and i_clk = '1') then
             for STAGE in 0 to g_STAGES loop
@@ -78,7 +78,7 @@ begin
         r_sums(STAGE)  <= r_sums(STAGE-1) + r_mults(STAGE);
     end generate g_GENERATE_sum;
 
-    --o_SIGNAL_OUT <= STD_LOGIC_VECTOR(r_sums(g_STAGES-1)(35 downto 12));
+    -- TODO: Calc bit growth, do roudning before truncation
     o_SIGNAL_OUT <= STD_LOGIC_VECTOR(r_sums(g_STAGES)(42 downto 42-23));
 
 end Behavioral;

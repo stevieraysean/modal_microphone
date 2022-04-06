@@ -151,5 +151,6 @@ begin
     o_clk_dec <= r_decimator_clk;
     -- CIC Filter Output
     -- grab the MSB's of the last comb stage
+    -- TODO: Rounding, calc bit growth etc..
     o_CIC_OUT <= STD_LOGIC_VECTOR(w_combs(g_STAGES-1)(c_CIC_BIT_DEPTH - 1 downto c_CIC_BIT_DEPTH - g_OUTPUT_BITDEPTH));
 end Behavioral;

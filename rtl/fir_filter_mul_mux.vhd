@@ -53,8 +53,7 @@ architecture Behavioral of fir_filter_mul_mux is
     signal r_counter : integer := 0;
 
 begin
-    -- delays
-    process_delays : PROCESS (i_clk_div)
+    process (i_clk_div)
     begin
         if (i_clk_div'event and i_clk_div = '1') then
             for STAGE in 0 to g_STAGES loop
@@ -67,7 +66,7 @@ begin
         end if;
     end process;
 
-    process_counter : PROCESS (i_clk)
+    process (i_clk)
         variable sum : signed((g_BITDEPTH*2)-1 downto 0) := (others => '0');
     begin
         if (i_clk'event and i_clk = '1') then
@@ -77,14 +76,12 @@ begin
 
             if r_counter = g_CLOCK_DIVIDER then
                 r_counter <= 0;
-                o_SIGNAL_OUT <= STD_LOGIC_VECTOR(sum(47-5 downto 24-5));
+                o_SIGNAL_OUT <= STD_LOGIC_VECTOR(sum(47-5 downto 24-5)); -- TODO: Calculate right range based on filter length. rounding... 
                 sum := (others => '0');
             else
                 r_counter <= r_counter + 1;
             end if;
         end if;
     end process;
-
-    
 
 end Behavioral;
