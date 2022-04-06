@@ -27,3 +27,8 @@ https://github.com/jhallen/vivado_setup
 - [ ] Summing stages for X microphones
 - [ ] FIR Filters for Spherical Harmonic Modes
 - [ ] USB Audio
+
+### General Module TODOs:
+- [ ] Calculate Bit Growth for trucation ranges
+- [ ] Rounding before truncation
+- [ ] Reset Signals
