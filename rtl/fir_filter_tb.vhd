@@ -54,11 +54,11 @@ begin
     begin
         if (r_clock = '1' and r_clock'EVENT) then
             r_clock_counter <= r_clock_counter + 1;
-            if r_clock_counter >= c_CLOCK_DIV then
+            if r_clock_counter >= (c_CLOCK_DIV-1) then
                 r_clock_counter <= 0;
                 r_clock_div <= '1';
             end if;
-            if r_clock_counter = (c_CLOCK_DIV/2) then
+            if r_clock_counter = ((c_CLOCK_DIV-1)/2) then
                 r_clock_div <= '0';
             end if;
         end if;
