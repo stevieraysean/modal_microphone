@@ -17,12 +17,13 @@ Method used for Vivado Git repo setup:
 https://github.com/jhallen/vivado_setup
 
 ## Roadmap
-- Testbench Simulation of pulse-density-modulated (PDM) Signals
-- CIC Filter, reconstruct PDM back to 24-bit 48kHz signals (support 96kHz, 192kHz also)
-- Half-band filters to further reduce sample-rate
-- FIR Filter compensation for CIC Magnitude Response and Anti-aliasing
-- Abstract construction of X Microphone elements basic on Spherical Coordinates
-- Testbench feeding X microphones different frequencies
-- Summing stages for X microphones
-- FIR Filters for Spherical Harmonic Modes
-- USB Audio
+- [*] Testbench Simulation of pulse-density-modulated (PDM) Signals
+- [*] CIC Filter, reconstruct PDM back to 24-bit 48kHz signals (support 96kHz, 192kHz also)
+- [*] Flexible FIR Filter design
+- [*] Half-band filters to further reduce sample-rate (TODO: rate reduction)
+- [ ] FIR Filter compensation for CIC Magnitude Response and Anti-aliasing
+- [ ] Abstract construction of X Microphone elements basic on Spherical Coordinates
+- [ ] Testbench feeding X microphones different frequencies
+- [ ] Summing stages for X microphones
+- [ ] FIR Filters for Spherical Harmonic Modes
+- [ ] USB Audio
