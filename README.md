@@ -29,6 +29,6 @@ https://github.com/jhallen/vivado_setup
 - [ ] USB Audio
 
 ### General Module TODOs:
-- [ ] Calculate Bit Growth for trucation ranges
+- [ ] Calculate Bit Growth for truncation ranges
 - [ ] Rounding before truncation
 - [ ] Reset Signals
