@@ -38,7 +38,8 @@ entity cic_decimation is
         i_clk     : in STD_LOGIC;
         i_CIC_IN  : in STD_LOGIC;
         o_clk_dec : out STD_LOGIC;
-        o_CIC_OUT : out STD_LOGIC_VECTOR(g_OUTPUT_BITDEPTH-1 downto 0) := (others => '0')
+        o_CIC_OUT : out STD_LOGIC_VECTOR(g_OUTPUT_BITDEPTH-1 downto 0) := (others => '0');
+        o_CIC_OUT_RND : out STD_LOGIC_VECTOR(g_OUTPUT_BITDEPTH-1 downto 0) := (others => '0')
         );
 end cic_decimation;
 
@@ -61,6 +62,9 @@ architecture Behavioral of cic_decimation is
     signal r_decimator_counter : unsigned(6 downto 0) := (others => '0');
     signal r_decimator_clk     : std_logic := '0';
     signal r_decimated_signal  : signed(c_CIC_REG_MAX downto 0) := (others => '0');
+
+    signal rounded      : signed(c_CIC_REG_MAX downto 0) := (others => '0');
+    signal round_vector : signed(c_CIC_REG_MAX downto 0) := (others => '0');
 
 begin
     -- PDM Input
@@ -151,6 +155,20 @@ begin
     o_clk_dec <= r_decimator_clk;
     -- CIC Filter Output
     -- grab the MSB's of the last comb stage
+    
+    
+    --c_CIC_BIT_DEPTH-g_OUTPUT_BITDEPTH-1
+    
     -- TODO: Rounding, calc bit growth etc..
+
+    round_vector <= (c_CIC_BIT_DEPTH-1 downto c_CIC_BIT_DEPTH-g_OUTPUT_BITDEPTH => '0') & (w_combs(g_STAGES-1)(c_CIC_BIT_DEPTH-g_OUTPUT_BITDEPTH-1));-- &(not (w_combs(g_STAGES-1)(c_CIC_BIT_DEPTH-g_OUTPUT_BITDEPTH-1))); --(25-24)-1 => std_logic(w_combs(g_STAGES-1)(25-24-1)) , (25-24-1 downto 0) => not std_logic(w_combs(g_STAGES-1)(25-24-1)));
+
+    rounded <= (w_combs(g_STAGES-1)(c_CIC_BIT_DEPTH - 1 downto 0) + round_vector);
+    
+        -- std_logic_vector(c_CIC_BIT_DEPTH to (c_CIC_BIT_DEPTH-g_OUTPUT_BITDEPTH) => '0', (c_CIC_BIT_DEPTH-g_OUTPUT_BITDEPTH)-1 => w_combs(g_STAGES-1) , (c_CIC_BIT_DEPTH-g_OUTPUT_BITDEPTH-1 downto 0) => not std_logic(w_combs(g_STAGES-1)));
+
+
+    o_CIC_OUT_RND <= STD_LOGIC_VECTOR(rounded(c_CIC_BIT_DEPTH - 1 downto c_CIC_BIT_DEPTH - g_OUTPUT_BITDEPTH));
+
     o_CIC_OUT <= STD_LOGIC_VECTOR(w_combs(g_STAGES-1)(c_CIC_BIT_DEPTH - 1 downto c_CIC_BIT_DEPTH - g_OUTPUT_BITDEPTH));
 end Behavioral;
