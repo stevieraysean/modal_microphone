@@ -63,16 +63,16 @@ begin
         variable v_integrator : real := 0.0;
         variable v_dac : real := 0.0;
 
-        variable c_SINE_FREQ_HZ: real := 1.0;
+        variable c_SINE_FREQ_HZ: real := 10.0;
     begin
         if rising_edge(r_clock_div) then
             v_tstep := v_tstep + c_CLOCK_DIV_PERIOD;
             
             -- Chirp signal
-            if c_SINE_FREQ_HZ > 24000.0 then
+            if c_SINE_FREQ_HZ > 20000.0 then
                 v_amp := 0.0;
             else
-                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 0.25;
+                c_SINE_FREQ_HZ := c_SINE_FREQ_HZ + 1.0; 
             end if;
 
             v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * c_SINE_FREQ_HZ);

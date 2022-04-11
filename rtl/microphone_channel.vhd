@@ -73,14 +73,14 @@ architecture Behavioral of microphone_channel is
     signal r_cic_output         : std_logic_vector(23 downto 0) := (others => '0');
     signal r_fir_output         : std_logic_vector(23 downto 0) := (others => '0');
     signal r_fir_mul_mux_output : std_logic_vector(23 downto 0) := (others => '0');
-    signal r_dec_clk    : std_logic := '0';
+    signal r_dec_clk            : std_logic := '0';
 
 begin
     cic_decimation_inst : cic_decimation
         port map (
-            i_clk       => i_clk_div,
+            i_clk       => i_clk_div, -- 3.071 MHZ
             i_CIC_IN    => i_pdm,
-            o_clk_dec   => r_dec_clk,
+            o_clk_dec   => r_dec_clk, -- 192 kHz
             o_CIC_OUT   => r_cic_output
         );
 
@@ -89,7 +89,7 @@ begin
             g_BITDEPTH => g_MIC_BITDEPTH
         )
         port map (
-            i_clk        => r_dec_clk,
+            i_clk        => r_dec_clk, -- 192 kHz
             i_SIGNAL_IN  => r_cic_output,
             o_SIGNAL_OUT => r_fir_output
         );
@@ -99,8 +99,8 @@ begin
             g_BITDEPTH => g_MIC_BITDEPTH
         )
         port map (
-            i_clk        => i_clk,
-            i_clk_div    => r_dec_clk,
+            i_clk        => i_clk,     -- 24.576 MHz
+            i_clk_div    => r_dec_clk, -- 192 kHz
             i_SIGNAL_IN  => r_cic_output,
             o_SIGNAL_OUT => r_fir_mul_mux_output
         );
