@@ -21,14 +21,14 @@ https://github.com/jhallen/vivado_setup
 - [x] CIC Filter, reconstruct PDM back to 24-bit 48kHz signals (support 96kHz, 192kHz also)
 - [x] Flexible FIR Filter design
 - [x] Half-band filters to further reduce sample-rate (TODO: rate reduction)
-- [ ] FIR Filter compensation for CIC Magnitude Response and Anti-aliasing
+- [x] FIR Filter compensation for CIC Magnitude Response and Anti-aliasing
+- [ ] FIR Filters for Spherical Harmonic Modes
 - [ ] Abstract construction of X Microphone elements basic on Spherical Coordinates
 - [ ] Testbench feeding X microphones different frequencies
 - [ ] Summing stages for X microphones
-- [ ] FIR Filters for Spherical Harmonic Modes
 - [ ] USB Audio
 
 ### General Module TODOs:
 - [ ] Calculate Bit Growth for truncation ranges
-- [ ] Rounding before truncation
+- [x] Rounding before truncation (done for CIC, TODO: FIR)
 - [ ] Reset Signals
