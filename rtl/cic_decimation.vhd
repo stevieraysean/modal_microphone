@@ -62,11 +62,12 @@ architecture Behavioral of cic_decimation is
     signal r_decimator_clk     : std_logic := '0';
     signal r_decimated_signal  : signed(c_CIC_REG_MAX downto 0) := (others => '0');
 
+    signal rounded_out         : std_logic_vector(7 downto 0);
 begin
     -- PDM Input
     process_r_pdm : PROCESS (i_clk)
     begin
-        if (i_clk'event and i_clk = '1') then
+        if rising_edge(i_clk) then
             -- cast PDM 0/1 input to -1/1
             -- TODO: double buffer?
             r_pdm_buff <= i_CIC_IN;
@@ -87,7 +88,7 @@ begin
     g_GENERATE_w_integrators: for STAGE in 1 to g_STAGES-1 generate
         process_integrator : PROCESS (i_clk)
         begin
-            if (i_clk'event and i_clk = '1') then
+            if rising_edge(i_clk) then
                 r_integrator_delays(STAGE) <= w_integrators(STAGE);
             end if;
         end process;
@@ -97,7 +98,7 @@ begin
     -- Decimation Stage
     process_decimator_clock : PROCESS (i_clk)
     begin
-        if (i_clk'event and i_clk = '1') then
+        if rising_edge(i_clk) then
             r_decimator_counter <= r_decimator_counter + 1;
 
             if (r_decimator_counter = g_DECIMATION_RATE) then
@@ -112,7 +113,7 @@ begin
 
     process_decimated_signals : PROCESS (r_decimator_clk)
     begin
-        if (r_decimator_clk'event and r_decimator_clk = '1') then
+        if rising_edge(r_decimator_clk) then
             r_decimated_signal <= w_integrators(g_STAGES-1);
         end if;
     end process;
@@ -125,7 +126,7 @@ begin
 
     process_comb_delays : PROCESS (r_decimator_clk)
     begin
-        if (r_decimator_clk'event and r_decimator_clk = '1') then
+        if rising_edge(r_decimator_clk) then
             for STAGE in 0 to g_STAGES-1 loop
                 if (STAGE = 0) then
                     for DEL in 0 to g_DIFFERENTIAL_DELAY-1 loop
@@ -152,5 +153,9 @@ begin
     -- CIC Filter Output
     -- grab the MSB's of the last comb stage
     -- TODO: Rounding, calc bit growth etc..
+
+    
+    --rounded_out <= (c_CIC_BIT_DEPTH-1 to 4 => w_combs(g_STAGES-1)(10), others => not w_combs(g_STAGES-1)(10));
+
     o_CIC_OUT <= STD_LOGIC_VECTOR(w_combs(g_STAGES-1)(c_CIC_BIT_DEPTH - 1 downto c_CIC_BIT_DEPTH - g_OUTPUT_BITDEPTH));
 end Behavioral;
