@@ -76,7 +76,7 @@ begin
             end if;
             
             -- TODO: probably roll these two processes together,
-            --       output on i_clk_div, support arbitory higher i_clk speeds
+            --       output on i_clk_div, support arbitrary higher i_clk speeds
             --       for now ~128 taps is pretty resonable
 
             if r_counter = g_CLOCK_DIVIDER-1 then

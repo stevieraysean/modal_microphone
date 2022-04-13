@@ -11,42 +11,46 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="30.584333333 ms"></ZoomStartTime>
-      <ZoomEndTime time="89.884333334 ms"></ZoomEndTime>
-      <Cursor1Time time="80.001000000 ms"></Cursor1Time>
+      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
+      <ZoomEndTime time="80.001000001 ms"></ZoomEndTime>
+      <Cursor1Time time="62.838685975 ms"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="249"></NameColumnWidth>
-      <ValueColumnWidth column_width="87"></ValueColumnWidth>
+      <ValueColumnWidth column_width="82"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="7" />
-   <wvobject type="logic" fp_name="/mems_pdm_tb/r_clock">
+   <WVObjectSize size="8" />
+   <wvobject fp_name="/mems_pdm_tb/r_clock" type="logic">
       <obj_property name="ElementShortName">r_clock</obj_property>
       <obj_property name="ObjectShortName">r_clock</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/mems_pdm_tb/r_clock_div">
+   <wvobject fp_name="/mems_pdm_tb/r_clock_div" type="logic">
       <obj_property name="ElementShortName">r_clock_div</obj_property>
       <obj_property name="ObjectShortName">r_clock_div</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/mems_pdm_tb/r_sim_sine_wave">
+   <wvobject fp_name="/mems_pdm_tb/r_sim_sine_wave" type="array">
       <obj_property name="ElementShortName">r_sim_sine_wave[23:0]</obj_property>
       <obj_property name="ObjectShortName">r_sim_sine_wave[23:0]</obj_property>
       <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
       <obj_property name="CellHeight">100</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/mems_pdm_tb/microphone_channel_inst/i_pdm">
+   <wvobject fp_name="/mems_pdm_tb/r_sine_wave_freq" type="other">
+      <obj_property name="ElementShortName">r_sine_wave_freq</obj_property>
+      <obj_property name="ObjectShortName">r_sine_wave_freq</obj_property>
+   </wvobject>
+   <wvobject fp_name="/mems_pdm_tb/microphone_channel_inst/i_pdm" type="logic">
       <obj_property name="ElementShortName">i_pdm</obj_property>
       <obj_property name="ObjectShortName">i_pdm</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/mems_pdm_tb/microphone_channel_inst/r_cic_output">
+   <wvobject fp_name="/mems_pdm_tb/microphone_channel_inst/r_cic_output" type="array">
       <obj_property name="ElementShortName">r_cic_output[23:0]</obj_property>
       <obj_property name="ObjectShortName">r_cic_output[23:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
       <obj_property name="CellHeight">100</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/mems_pdm_tb/microphone_channel_inst/r_fir_output">
+   <wvobject fp_name="/mems_pdm_tb/microphone_channel_inst/r_fir_output" type="array">
       <obj_property name="ElementShortName">r_fir_output[23:0]</obj_property>
       <obj_property name="ObjectShortName">r_fir_output[23:0]</obj_property>
       <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
@@ -59,7 +63,7 @@
       <obj_property name="AnalogOffscale">ANALOG_OFFSCALE_HIDE</obj_property>
       <obj_property name="AnalogHorizLine">0.000000</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/mems_pdm_tb/microphone_channel_inst/r_fir_mul_mux_output">
+   <wvobject fp_name="/mems_pdm_tb/microphone_channel_inst/r_fir_mul_mux_output" type="array">
       <obj_property name="ElementShortName">r_fir_mul_mux_output[23:0]</obj_property>
       <obj_property name="ObjectShortName">r_fir_mul_mux_output[23:0]</obj_property>
       <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
