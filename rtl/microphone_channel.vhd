@@ -25,8 +25,8 @@ use work.data_types.ALL;
 
 entity microphone_channel is
     Generic( 
-        g_PHI          : real := 0.0;
-        g_THETA        : real := 0.0; --Pi Radians
+        g_PHI          : real    := 0.0; --Position Pi Radians
+        g_THETA        : real    := 0.0;
         g_MIC_BITDEPTH : integer := 24
     );
     Port ( 
@@ -41,9 +41,9 @@ architecture Behavioral of microphone_channel is
     component cic_decimation is
         port (
             i_clk       : in std_logic;
-            i_CIC_IN    : in std_logic;
+            i_cic_in    : in std_logic;
             o_clk_dec   : out std_logic;
-            o_CIC_OUT   : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
+            o_cic_out   : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
         );
     end component cic_decimation;
 
@@ -53,20 +53,21 @@ architecture Behavioral of microphone_channel is
         );
         port (
             i_clk          : in std_logic;
-            i_SIGNAL_IN    : in std_logic_vector(23 downto 0);
-            o_SIGNAL_OUT   : out std_logic_vector(23 downto 0)
+            i_signal_in    : in std_logic_vector(23 downto 0);
+            o_signal_out   : out std_logic_vector(23 downto 0)
         );
     end component fir_filter;
 
     component fir_filter_mul_mux is
         generic (
-            g_BITDEPTH : integer
+            g_BITDEPTH : integer;
+            g_COEFFICIENTS : array_of_integers
         );
         port (
             i_clk          : in std_logic;
             i_clk_div      : in std_logic;
-            i_SIGNAL_IN    : in std_logic_vector(23 downto 0);
-            o_SIGNAL_OUT   : out std_logic_vector(23 downto 0)
+            i_signal_in    : in std_logic_vector(23 downto 0);
+            o_signal_out   : out std_logic_vector(23 downto 0)
         );
     end component fir_filter_mul_mux;
 
@@ -79,9 +80,9 @@ begin
     cic_decimation_inst : cic_decimation
         port map (
             i_clk       => i_clk_div, -- 3.071 MHZ
-            i_CIC_IN    => i_pdm,
+            i_cic_in    => i_pdm,
             o_clk_dec   => r_dec_clk, -- 192 kHz
-            o_CIC_OUT   => r_cic_output
+            o_cic_out   => r_cic_output
         );
 
     fir_filter_inst : fir_filter
@@ -90,20 +91,22 @@ begin
         )
         port map (
             i_clk        => r_dec_clk, -- 192 kHz
-            i_SIGNAL_IN  => r_cic_output,
-            o_SIGNAL_OUT => r_fir_output
+            i_signal_in  => r_cic_output,
+            o_signal_out => r_fir_output
         );
 
     fir_filter_mul_mux_inst : fir_filter_mul_mux
         generic map(
-            g_BITDEPTH => g_MIC_BITDEPTH
+            g_BITDEPTH => g_MIC_BITDEPTH,
+            -- CIC Compensator, Fpb = 24kHz
+            g_COEFFICIENTS => (-1678,-2517,-2517,838,7549,13421,14260,6710,-5873,-16778,-15939,-839,20132,31037,19293,-11745,-41105,-44460,-11745,38587,69625,51170,-14261,-83048,-99825,-37749,69625,144284,117440,-13422,-164417,-216427,-99825,130862,317089,290245,5872,-389232,-607336,-387554,332188,1332110,2201170,2544264,2201170,1332110,332188,-387554,-607336,-389232,5872,290245,317089,130862,-99825,-216427,-164417,-13422,117440,144284,69625,-37749,-99825,-83048,-14261,51170,69625,38587,-11745,-44460,-41105,-11745,19293,31037,20132,-839,-15939,-16778,-5873,6710,14260,13421,7549,838,-2517,-2517,-1678)
         )
         port map (
             i_clk        => i_clk,     -- 24.576 MHz
             i_clk_div    => r_dec_clk, -- 192 kHz
-            i_SIGNAL_IN  => r_cic_output,
-            o_SIGNAL_OUT => r_fir_mul_mux_output
+            i_signal_in  => r_cic_output,
+            o_signal_out => r_fir_mul_mux_output
         );
 
-    o_output <= r_fir_output;
+    o_output <= r_fir_mul_mux_output;
 end Behavioral;
