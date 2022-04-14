@@ -8,7 +8,7 @@ Vivado v2021.2 (64-bit)
 - Open Vivado
 - In TCL Console:
 ``` 
-cd /.../modal_microphone
+cd /modal_microphone
 source rebuild.tcl
 ```
 may need to delete modal_microphone_vivado directory before source command, or use -force arguement.
@@ -20,12 +20,11 @@ https://github.com/jhallen/vivado_setup
 - [x] Testbench Simulation of pulse-density-modulated (PDM) Signals
 - [x] CIC Filter, reconstruct PDM back to 24-bit 48kHz signals (support 96kHz, 192kHz also)
 - [x] Flexible FIR Filter design
-- [x] Half-band filters to further reduce sample-rate (TODO: rate reduction)
 - [x] FIR Filter compensation for CIC Magnitude Response and Anti-aliasing
-- [ ] FIR Filters for Spherical Harmonic Modes
-- [ ] Abstract construction of X Microphone elements basic on Spherical Coordinates
-- [ ] Testbench feeding X microphones different frequencies
+- [ ] Abstract construction of multiple Microphone elements based on Spherical Coordinates
 - [ ] Summing stages for X microphones
+- [ ] FIR Filters for Spherical Harmonic Modes
+- [ ] Testbench feeding X microphones different frequencies
 - [ ] USB Audio
 
 ### General Module TODOs:
