@@ -18,8 +18,8 @@ https://github.com/jhallen/vivado_setup
 
 ## Roadmap
 - [x] Testbench Simulation of pulse-density-modulated (PDM) Signals
-- [x] CIC Filter, reconstruct PDM back to 24-bit 48kHz signals (support 96kHz, 192kHz also)
-- [x] Flexible FIR Filter design
+- [x] CIC Filter, reconstruct 1-bit PDM back to 24-bit 192kHz audio signal
+- [x] Flexible FIR Filter design (generate from filter coeffieicents)
 - [x] FIR Filter compensation for CIC Magnitude Response and Anti-aliasing
 - [ ] Abstract construction of multiple Microphone elements based on Spherical Coordinates
 - [ ] Summing stages for X microphones
