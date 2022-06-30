@@ -25,15 +25,13 @@ use work.data_types.ALL;
 
 entity microphone_channel is
     Generic( 
-        g_PHI          : real    := 0.0; --Position Pi Radians
-        g_THETA        : real    := 0.0;
         g_MIC_BITDEPTH : integer := 24
     );
     Port ( 
         i_clk     : in STD_LOGIC;
         i_clk_div : in STD_LOGIC;
         i_pdm     : in STD_LOGIC;       
-        o_output  : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
+        o_output  : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0) -- TODO: signed outputs
     );
 end microphone_channel;
 
