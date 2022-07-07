@@ -45,16 +45,16 @@ architecture Behavioral of microphone_channel is
         );
     end component cic_decimation;
 
-    component fir_filter is
-        generic (
-            g_BITDEPTH : integer
-        );
-        port (
-            i_clk          : in std_logic;
-            i_signal_in    : in std_logic_vector(23 downto 0);
-            o_signal_out   : out std_logic_vector(23 downto 0)
-        );
-    end component fir_filter;
+    -- component fir_filter is
+    --     generic (
+    --         g_BITDEPTH : integer
+    --     );
+    --     port (
+    --         i_clk          : in std_logic;
+    --         i_signal_in    : in std_logic_vector(23 downto 0);
+    --         o_signal_out   : out std_logic_vector(23 downto 0)
+    --     );
+    -- end component fir_filter;
 
     component fir_filter_mul_mux is
         generic (
@@ -83,15 +83,15 @@ begin
             o_cic_out   => r_cic_output
         );
 
-    fir_filter_inst : fir_filter
-        generic map(
-            g_BITDEPTH => g_MIC_BITDEPTH
-        )
-        port map (
-            i_clk        => r_dec_clk, -- 192 kHz
-            i_signal_in  => r_cic_output,
-            o_signal_out => r_fir_output
-        );
+    -- fir_filter_inst : fir_filter
+    --     generic map(
+    --         g_BITDEPTH => g_MIC_BITDEPTH
+    --     )
+    --     port map (
+    --         i_clk        => r_dec_clk, -- 192 kHz
+    --         i_signal_in  => r_cic_output,
+    --         o_signal_out => r_fir_output
+    --     );
 
     fir_filter_mul_mux_inst : fir_filter_mul_mux
         generic map(
