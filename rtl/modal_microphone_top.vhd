@@ -65,10 +65,12 @@ begin
         );
     end generate g_GEN_MICS;
 
-    process(i_clock_div)
+    process(mic_outs)
         variable sum : signed((g_MIC_BITDEPTH*2)-1 downto 0) := (others => '0');
     begin
-        if rising_edge(i_clock_div) then
+        --if rising_edge(i_clock_div) then
+            sum := (others => '0');
+            
             for mic in 0 to g_NUMBER_MICS-1 loop
                 sum := signed(mic_outs(mic)) + sum;
             end loop;
@@ -77,7 +79,7 @@ begin
             -- o_output <= std_logic_vector(mode_output);
             o_output <= std_logic_vector(sum(g_MIC_BITDEPTH-1downto 0));
 
-        end if;
+        --end if;
     end process;
 
 
