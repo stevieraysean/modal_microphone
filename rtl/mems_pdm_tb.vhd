@@ -10,24 +10,29 @@ end mems_pdm_tb;
 
 architecture Behavioral of mems_pdm_tb is       
     constant c_CLOCK_FREQ_HZ     : real := 384000000.0;
-    constant c_CLOCK_DIVIDER     : integer := 125; -- 384MHz to 3.072MHz
+    constant c_CLOCK_3072E3_DIV  : integer := 125;  -- 384MHz to 3.072MHz
+    constant c_CLOCK_192E3_DIV   : integer := 2000; -- 384MHz to 192kHz
     constant c_CLOCK_PERIOD      : real := (1.0 / c_CLOCK_FREQ_HZ);
     constant c_CLOCK_PERIOD_HALF : time := (c_CLOCK_PERIOD / 2) * 1 sec;
-    constant c_CLOCK_DIV_PERIOD  : real := (c_CLOCK_DIVIDER * 1.0 ) / c_CLOCK_FREQ_HZ;
+    constant c_CLOCK_DIV_PERIOD  : real := (c_CLOCK_3072E3_DIV *1.0) / c_CLOCK_FREQ_HZ;
     constant c_SIM_BIT_DEPTH     : integer := 24;
 
     component microphone_channel is
         port (
-            i_clk     : in std_logic;
-            i_clk_div : in std_logic;
-            i_pdm     : in std_logic;
-            o_output  : out std_logic_vector(c_SIM_BIT_DEPTH-1 downto 0)
+            i_clk_384e6  : in STD_LOGIC;
+            i_clk_3072e3 : in STD_LOGIC;
+            i_clk_192e3  : in STD_LOGIC;
+            i_pdm        : in std_logic;
+            o_output     : out std_logic_vector(c_SIM_BIT_DEPTH-1 downto 0)
         );
     end component microphone_channel;
 
-    signal r_clock           : std_logic := '0';
-    signal r_clk_192e3       : std_logic := '1';
-    signal r_clk_192e3_count : integer   := 0;
+    signal r_clock            : std_logic := '0';
+    signal r_clk_3072e3       : std_logic := '1';
+    signal r_clk_192e3        : std_logic := '1';
+    signal r_clk_3072e3_count : integer   := 0;
+    signal r_clk_192e3_count  : integer   := 0;
+
     signal r_adc             : std_logic := '0';
     signal r_mic_output      : std_logic_vector((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
     signal r_sim_sine_wave   : std_logic_vector((c_SIM_BIT_DEPTH-1) downto 0) := (others => '0');
@@ -40,13 +45,30 @@ begin
     process (r_clock)
     begin
         if rising_edge(r_clock) then
+            r_clk_3072e3_count <= r_clk_3072e3_count + 1;
+
+            if r_clk_3072e3_count = c_CLOCK_3072E3_DIV-1 then
+                r_clk_3072e3 <= '1';
+                r_clk_3072e3_count <= 0;
+            else
+                if r_clk_3072e3_count = (c_CLOCK_3072E3_DIV-1)/2 then
+                    r_clk_3072e3 <= '0';
+                end if;
+                r_clk_3072e3_count <= r_clk_3072e3_count + 1;
+            end if;
+        end if;
+    end process;
+
+    process (r_clock)
+    begin
+        if rising_edge(r_clock) then
             r_clk_192e3_count <= r_clk_192e3_count + 1;
 
-            if r_clk_192e3_count = c_CLOCK_DIVIDER-1 then
+            if r_clk_192e3_count = c_CLOCK_192E3_DIV-1 then
                 r_clk_192e3 <= '1';
                 r_clk_192e3_count <= 0;
             else
-                if r_clk_192e3_count = (c_CLOCK_DIVIDER-1)/2 then
+                if r_clk_192e3_count = (c_CLOCK_192E3_DIV-1)/2 then
                     r_clk_192e3 <= '0';
                 end if;
                 r_clk_192e3_count <= r_clk_192e3_count + 1;
@@ -55,7 +77,7 @@ begin
     end process;
 
 
-    sine_wave : process(r_clk_192e3)
+    sine_wave : process(r_clk_3072e3)
         variable v_analog_sig      : real := 0.0;
         variable v_amp             : real := 0.95; -- prevent clipping, TODO: fix & remove
         variable v_difference      : real := 0.0;
@@ -65,7 +87,7 @@ begin
         
 
     begin
-        if rising_edge(r_clk_192e3) then
+        if rising_edge(r_clk_3072e3) then
             v_tstep := v_tstep + c_CLOCK_DIV_PERIOD;
 
             -- Chirp signal -- TODO: import better test signal
@@ -103,10 +125,11 @@ begin
     
     microphone_channel_inst : microphone_channel
         port map (
-            i_clk     => r_clock,
-            i_clk_div => r_clk_192e3,
-            i_pdm     => r_adc,
-            o_output  => r_mic_output
+            i_clk_384e6  => r_clock,
+            i_clk_3072e3 => r_clk_3072e3,
+            i_clk_192e3  => r_clk_192e3,
+            i_pdm        => r_adc,
+            o_output     => r_mic_output
         );
 
 end Behavioral;

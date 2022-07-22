@@ -5,4 +5,4 @@ set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
 set_property CONFIG_MODE SPIx4 [current_design]
 
-create_clock -period 2.604166666666667 -name ext_pll_in [get_ports i_clock]
+create_clock -period 2.604166666666667 -name i_clock [get_ports i_clock]
