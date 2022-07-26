@@ -13,17 +13,25 @@
    </db_ref_list>
    <zoom_setting>
       <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
-      <ZoomEndTime time="20.000000001 ms"></ZoomEndTime>
-      <Cursor1Time time="20.000000000 ms"></Cursor1Time>
+      <ZoomEndTime time="20.001000001 ms"></ZoomEndTime>
+      <Cursor1Time time="1.903522698 ms"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="249"></NameColumnWidth>
       <ValueColumnWidth column_width="78"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="14" />
+   <WVObjectSize size="15" />
    <wvobject type="logic" fp_name="/mems_pdm_tb/r_clock">
       <obj_property name="ElementShortName">r_clock</obj_property>
       <obj_property name="ObjectShortName">r_clock</obj_property>
+   </wvobject>
+   <wvobject type="other" fp_name="/mems_pdm_tb/r_clk_3072e3_count">
+      <obj_property name="ElementShortName">r_clk_3072e3_count</obj_property>
+      <obj_property name="ObjectShortName">r_clk_3072e3_count</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mems_pdm_tb/r_clk_3072e3">
+      <obj_property name="ElementShortName">r_clk_3072e3</obj_property>
+      <obj_property name="ObjectShortName">r_clk_3072e3</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/mems_pdm_tb/r_clk_192e3">
       <obj_property name="ElementShortName">r_clk_192e3</obj_property>
@@ -55,10 +63,6 @@
    <wvobject type="other" fp_name="/mems_pdm_tb/c_CLOCK_FREQ_HZ">
       <obj_property name="ElementShortName">c_CLOCK_FREQ_HZ</obj_property>
       <obj_property name="ObjectShortName">c_CLOCK_FREQ_HZ</obj_property>
-   </wvobject>
-   <wvobject type="other" fp_name="/mems_pdm_tb/c_CLOCK_DIVIDER">
-      <obj_property name="ElementShortName">c_CLOCK_DIVIDER</obj_property>
-      <obj_property name="ObjectShortName">c_CLOCK_DIVIDER</obj_property>
    </wvobject>
    <wvobject type="other" fp_name="/mems_pdm_tb/c_CLOCK_PERIOD">
       <obj_property name="ElementShortName">c_CLOCK_PERIOD</obj_property>

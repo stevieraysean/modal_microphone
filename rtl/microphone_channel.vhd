@@ -29,8 +29,8 @@ entity microphone_channel is
     );
     Port ( 
         i_clk_384e6  : in STD_LOGIC;
-        i_clk_3072e3 : in STD_LOGIC;
-        i_clk_192e3  : in STD_LOGIC;
+        i_clk_3072e3_en : in STD_LOGIC;
+        i_clk_192e3_en  : in STD_LOGIC;
         i_pdm        : in STD_LOGIC;       
         o_output     : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0) -- TODO: signed outputs
     );
@@ -39,8 +39,9 @@ end microphone_channel;
 architecture Behavioral of microphone_channel is
     component cic_decimation is
         port (
-            i_clk_3072e3 : in std_logic;
-            i_clk_192e3  : in std_logic;
+            i_clk_384e6 : in std_logic;
+            i_clk_3072e3_en : in std_logic;
+            i_clk_192e3_en  : in std_logic;
             i_cic_in     : in std_logic;
             o_cic_out    : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
         );
@@ -64,7 +65,7 @@ architecture Behavioral of microphone_channel is
         );
         port (
             i_clk_384e6    : in std_logic;
-            i_clk_192e3    : in std_logic;
+            i_clk_192e3_en : in std_logic;
             i_signal_in    : in std_logic_vector(23 downto 0);
             o_signal_out   : out std_logic_vector(23 downto 0)
         );
@@ -78,8 +79,9 @@ architecture Behavioral of microphone_channel is
 begin
     cic_decimation_inst : cic_decimation
         port map (
-            i_clk_3072e3 => i_clk_3072e3, -- 3.071 MHZ
-            i_clk_192e3  => i_clk_192e3,  -- 192 kHz
+            i_clk_384e6  => i_clk_384e6,
+            i_clk_3072e3_en => i_clk_3072e3_en, -- 3.071 MHZ
+            i_clk_192e3_en  => i_clk_192e3_en,  -- 192 kHz
             i_cic_in     => i_pdm,
             o_cic_out    => r_cic_output
         );
@@ -102,7 +104,7 @@ begin
         )
         port map (
             i_clk_384e6  => i_clk_384e6,
-            i_clk_192e3  => i_clk_192e3,
+            i_clk_192e3_en  => i_clk_192e3_en,
             i_signal_in  => r_cic_output,
             o_signal_out => r_fir_mul_mux_output
         );

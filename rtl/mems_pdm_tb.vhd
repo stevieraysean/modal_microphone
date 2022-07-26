@@ -17,15 +17,18 @@ architecture Behavioral of mems_pdm_tb is
     constant c_CLOCK_DIV_PERIOD  : real := (c_CLOCK_3072E3_DIV *1.0) / c_CLOCK_FREQ_HZ;
     constant c_SIM_BIT_DEPTH     : integer := 24;
 
-    component microphone_channel is
+    component modal_microphone_top is
+        Generic( 
+            g_MIC_BITDEPTH : integer := 24;
+            g_ORDER        : integer := 2;
+            g_NUMBER_MICS  : integer := 1
+            );
         port (
-            i_clk_384e6  : in STD_LOGIC;
-            i_clk_3072e3 : in STD_LOGIC;
-            i_clk_192e3  : in STD_LOGIC;
-            i_pdm        : in std_logic;
-            o_output     : out std_logic_vector(c_SIM_BIT_DEPTH-1 downto 0)
+            i_clock  : in std_logic;
+            i_pdm_in : in std_logic_vector(g_NUMBER_MICS-1 downto 0);
+            o_output : out std_logic_vector(c_SIM_BIT_DEPTH-1 downto 0)
         );
-    end component microphone_channel;
+    end component modal_microphone_top;
 
     signal r_clock            : std_logic := '0';
     signal r_clk_3072e3       : std_logic := '1';
@@ -59,22 +62,22 @@ begin
         end if;
     end process;
 
-    process (r_clock)
-    begin
-        if rising_edge(r_clock) then
-            r_clk_192e3_count <= r_clk_192e3_count + 1;
+    -- process (r_clock)
+    -- begin
+    --     if rising_edge(r_clock) then
+    --         r_clk_192e3_count <= r_clk_192e3_count + 1;
 
-            if r_clk_192e3_count = c_CLOCK_192E3_DIV-1 then
-                r_clk_192e3 <= '1';
-                r_clk_192e3_count <= 0;
-            else
-                if r_clk_192e3_count = (c_CLOCK_192E3_DIV-1)/2 then
-                    r_clk_192e3 <= '0';
-                end if;
-                r_clk_192e3_count <= r_clk_192e3_count + 1;
-            end if;
-        end if;
-    end process;
+    --         if r_clk_192e3_count = c_CLOCK_192E3_DIV-1 then
+    --             r_clk_192e3 <= '1';
+    --             r_clk_192e3_count <= 0;
+    --         else
+    --             if r_clk_192e3_count = (c_CLOCK_192E3_DIV-1)/2 then
+    --                 r_clk_192e3 <= '0';
+    --             end if;
+    --             r_clk_192e3_count <= r_clk_192e3_count + 1;
+    --         end if;
+    --     end if;
+    -- end process;
 
 
     sine_wave : process(r_clk_3072e3)
@@ -123,13 +126,11 @@ begin
         end if;
     end process;
     
-    microphone_channel_inst : microphone_channel
+    microphone_microphone_inst : modal_microphone_top
         port map (
-            i_clk_384e6  => r_clock,
-            i_clk_3072e3 => r_clk_3072e3,
-            i_clk_192e3  => r_clk_192e3,
-            i_pdm        => r_adc,
-            o_output     => r_mic_output
+            i_clock  => r_clock,
+            i_pdm_in(0) => r_adc,
+            o_output => r_mic_output
         );
 
 end Behavioral;
