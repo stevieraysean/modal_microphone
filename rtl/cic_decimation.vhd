@@ -35,7 +35,7 @@ entity cic_decimation is
         g_OUTPUT_BITDEPTH    : integer := 24
         );
     port ( 
-        i_clk_384e6     : in std_logic;
+        i_clk_768e5     : in std_logic;
         i_clk_3072e3_en : in std_logic; -- 3.071 MHZ
         i_clk_192e3_en  : in std_logic; -- 192 kHz
         i_cic_in        : in std_logic;
@@ -65,11 +65,12 @@ architecture Behavioral of cic_decimation is
     signal r_decimator_clk     : std_logic := '0';
     signal r_decimated_signal  : signed(c_CIC_REG_MAX downto 0) := (others => '0');
     signal r_rounded_out       : std_logic_vector(7 downto 0);
+
 begin
     -- PDM Input
-    process_r_pdm : PROCESS (i_clk_384e6, i_clk_3072e3_en)
+    process_r_pdm : PROCESS (i_clk_768e5, i_clk_3072e3_en)
     begin
-        if rising_edge(i_clk_384e6) and i_clk_3072e3_en = '1' then
+        if rising_edge(i_clk_768e5) and i_clk_3072e3_en = '1' then
             -- cast PDM 0/1 input to -1/1
             -- TODO: double buffer?
             r_pdm_buff1 <= i_cic_in;
@@ -82,17 +83,17 @@ begin
             end if;
             
             r_integrator_delays(0) <= w_integrators(0);
+
         end if;
     end process;
-
 
     -- Integration Stages
     w_integrators(0) <= r_integrator_delays(0) + r_pdm;
 
     g_GENERATE_w_integrators: for stage in 1 to g_STAGES-1 generate
-        process_integrator : PROCESS (i_clk_384e6, i_clk_3072e3_en)
+        process_integrator : PROCESS (i_clk_768e5, i_clk_3072e3_en)
         begin
-            if rising_edge(i_clk_384e6) and i_clk_3072e3_en = '1' then
+            if rising_edge(i_clk_768e5) and i_clk_3072e3_en = '1' then
                 r_integrator_delays(stage) <= w_integrators(stage);
             end if;
         end process;
@@ -115,9 +116,9 @@ begin
     --     end if;
     -- end process;
 
-    process_decimated_signals : PROCESS (i_clk_384e6, i_clk_192e3_en)
+    process_decimated_signals : PROCESS (i_clk_768e5, i_clk_192e3_en)
     begin
-        if rising_edge(i_clk_384e6) and i_clk_192e3_en = '1' then
+        if rising_edge(i_clk_768e5) and i_clk_192e3_en = '1' then
             r_decimated_signal <= w_integrators(g_STAGES-1);
         end if;
     end process;
@@ -128,9 +129,9 @@ begin
         w_combs(STAGE) <= w_combs(stage-1) - r_comb_delays(stage, g_DIFFERENTIAL_DELAY-1);
     end generate g_GENERATE_w_combs; 
 
-    process_comb_delays : PROCESS (i_clk_384e6, i_clk_192e3_en)
+    process_comb_delays : PROCESS (i_clk_768e5, i_clk_192e3_en)
     begin
-        if rising_edge(i_clk_384e6) and i_clk_192e3_en = '1' then
+        if rising_edge(i_clk_768e5) and i_clk_192e3_en = '1' then
             for stage in 0 to g_STAGES-1 loop
                 if stage = 0 then
                     for delay in 0 to g_DIFFERENTIAL_DELAY-1 loop

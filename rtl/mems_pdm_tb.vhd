@@ -9,26 +9,26 @@ entity mems_pdm_tb is
 end mems_pdm_tb;
 
 architecture Behavioral of mems_pdm_tb is       
-    constant c_CLOCK_FREQ_HZ     : real := 384000000.0;
-    constant c_CLOCK_3072E3_DIV  : integer := 125;  -- 384MHz to 3.072MHz
-    constant c_CLOCK_192E3_DIV   : integer := 2000; -- 384MHz to 192kHz
+    constant c_CLOCK_FREQ_HZ     : real := 76800000.0;
+    constant c_CLOCK_3072E3_DIV  : integer := 25;  -- 384MHz to 3.072MHz
+    constant c_CLOCK_192E3_DIV   : integer := 400; -- 384MHz to 192kHz
     constant c_CLOCK_PERIOD      : real := (1.0 / c_CLOCK_FREQ_HZ);
     constant c_CLOCK_PERIOD_HALF : time := (c_CLOCK_PERIOD / 2) * 1 sec;
     constant c_CLOCK_DIV_PERIOD  : real := (c_CLOCK_3072E3_DIV *1.0) / c_CLOCK_FREQ_HZ;
     constant c_SIM_BIT_DEPTH     : integer := 24;
 
-    component modal_microphone_top is
+    component microphone_channel is
         Generic( 
-            g_MIC_BITDEPTH : integer := 24;
-            g_ORDER        : integer := 2;
-            g_NUMBER_MICS  : integer := 1
-            );
-        port (
-            i_clock  : in std_logic;
-            i_pdm_in : in std_logic_vector(g_NUMBER_MICS-1 downto 0);
-            o_output : out std_logic_vector(c_SIM_BIT_DEPTH-1 downto 0)
+            g_MIC_BITDEPTH : integer := 24
         );
-    end component modal_microphone_top;
+        Port ( 
+            i_clk_768e5     : in STD_LOGIC;
+            i_clk_3072e3_en : in STD_LOGIC;
+            i_clk_192e3_en  : in STD_LOGIC;
+            i_pdm           : in STD_LOGIC;       
+            o_output        : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
+        );
+    end component microphone_channel;
 
     signal r_clock            : std_logic := '0';
     signal r_clk_3072e3       : std_logic := '1';
@@ -62,22 +62,22 @@ begin
         end if;
     end process;
 
-    -- process (r_clock)
-    -- begin
-    --     if rising_edge(r_clock) then
-    --         r_clk_192e3_count <= r_clk_192e3_count + 1;
+    process (r_clock)
+    begin
+        if rising_edge(r_clock) then
+            r_clk_192e3_count <= r_clk_192e3_count + 1;
 
-    --         if r_clk_192e3_count = c_CLOCK_192E3_DIV-1 then
-    --             r_clk_192e3 <= '1';
-    --             r_clk_192e3_count <= 0;
-    --         else
-    --             if r_clk_192e3_count = (c_CLOCK_192E3_DIV-1)/2 then
-    --                 r_clk_192e3 <= '0';
-    --             end if;
-    --             r_clk_192e3_count <= r_clk_192e3_count + 1;
-    --         end if;
-    --     end if;
-    -- end process;
+            if r_clk_192e3_count = c_CLOCK_192E3_DIV-1 then
+                r_clk_192e3 <= '1';
+                r_clk_192e3_count <= 0;
+            else
+                if r_clk_192e3_count = (c_CLOCK_192E3_DIV-1)/2 then
+                    r_clk_192e3 <= '0';
+                end if;
+                r_clk_192e3_count <= r_clk_192e3_count + 1;
+            end if;
+        end if;
+    end process;
 
 
     sine_wave : process(r_clk_3072e3)
@@ -126,11 +126,13 @@ begin
         end if;
     end process;
     
-    microphone_microphone_inst : modal_microphone_top
+    microphone_microphone_inst : microphone_channel
         port map (
-            i_clock  => r_clock,
-            i_pdm_in(0) => r_adc,
-            o_output => r_mic_output
+            i_clk_768e5     => r_clock,
+            i_clk_3072e3_en => r_clk_3072e3,
+            i_clk_192e3_en  => r_clk_192e3,
+            i_pdm           => r_adc,     
+            o_output        => r_mic_output
         );
 
 end Behavioral;
