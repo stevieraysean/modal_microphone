@@ -54,9 +54,7 @@ begin
                 r_clk_3072e3 <= '1';
                 r_clk_3072e3_count <= 0;
             else
-                if r_clk_3072e3_count = (c_CLOCK_3072E3_DIV-1)/2 then
-                    r_clk_3072e3 <= '0';
-                end if;
+                r_clk_3072e3 <= '0';
                 r_clk_3072e3_count <= r_clk_3072e3_count + 1;
             end if;
         end if;
@@ -71,9 +69,7 @@ begin
                 r_clk_192e3 <= '1';
                 r_clk_192e3_count <= 0;
             else
-                if r_clk_192e3_count = (c_CLOCK_192E3_DIV-1)/2 then
-                    r_clk_192e3 <= '0';
-                end if;
+                r_clk_192e3 <= '0';
                 r_clk_192e3_count <= r_clk_192e3_count + 1;
             end if;
         end if;

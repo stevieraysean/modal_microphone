@@ -31,7 +31,7 @@ entity modal_microphone_top is
         );
     Port ( 
         i_clock     : in STD_LOGIC;
-        -- i_pdm_in    : in STD_LOGIC;
+        --i_pdm_in    : in STD_LOGIC;
         i_pdm_in    : in std_logic_vector(g_NUMBER_MICS-1 downto 0);       --TODO: input array for mics
         o_output    : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
     );
@@ -47,7 +47,7 @@ architecture Behavioral of modal_microphone_top is
             clk_out1          : out    std_logic;
             reset             : in     std_logic;
             locked            : out    std_logic;
-            i_clock           : in     std_logic
+            clk_in1           : in     std_logic
         );
     end component;
 
@@ -82,7 +82,7 @@ begin
             clk_out1 => r_clk_384e6,
             reset    => r_clk_384e6_reset,
             locked   => r_clk_384e6_locked,
-            i_clock  => i_clock
+            clk_in1  => i_clock
         );
 
 
