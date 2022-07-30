@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="mems_pdm_tb_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="data_types" />
+            <top_module name="glbl" />
+            <top_module name="mems_pdm_tb" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="0.000000000 ms"></ZoomStartTime>
+      <ZoomEndTime time="75.300000001 ms"></ZoomEndTime>
+      <Cursor1Time time="10.035809490 ms"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="249"></NameColumnWidth>
+      <ValueColumnWidth column_width="74"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="7" />
+   <wvobject type="logic" fp_name="/mems_pdm_tb/microphone_microphone_inst/cic_decimation_inst/i_clk_768e5">
+      <obj_property name="ElementShortName">i_clk_768e5</obj_property>
+      <obj_property name="ObjectShortName">i_clk_768e5</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mems_pdm_tb/microphone_microphone_inst/cic_decimation_inst/i_clk_3072e3_en">
+      <obj_property name="ElementShortName">i_clk_3072e3_en</obj_property>
+      <obj_property name="ObjectShortName">i_clk_3072e3_en</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/mems_pdm_tb/r_adc">
+      <obj_property name="ElementShortName">r_adc</obj_property>
+      <obj_property name="ObjectShortName">r_adc</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mems_pdm_tb/r_sim_sine_wave">
+      <obj_property name="ElementShortName">r_sim_sine_wave[23:0]</obj_property>
+      <obj_property name="ObjectShortName">r_sim_sine_wave[23:0]</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mems_pdm_tb/microphone_microphone_inst/cic_decimation_inst/w_integrators">
+      <obj_property name="ElementShortName">w_integrators[0:5][24:0]</obj_property>
+      <obj_property name="ObjectShortName">w_integrators[0:5][24:0]</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mems_pdm_tb/microphone_microphone_inst/cic_decimation_inst/o_cic_out">
+      <obj_property name="ElementShortName">o_cic_out[23:0]</obj_property>
+      <obj_property name="ObjectShortName">o_cic_out[23:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/mems_pdm_tb/r_mic_output">
+      <obj_property name="ElementShortName">r_mic_output[23:0]</obj_property>
+      <obj_property name="ObjectShortName">r_mic_output[23:0]</obj_property>
+      <obj_property name="WaveformStyle">STYLE_ANALOG</obj_property>
+      <obj_property name="CellHeight">100</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>
