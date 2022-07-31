@@ -30,4 +30,3 @@ https://github.com/jhallen/vivado_setup
 ### General Module TODOs:
 - [ ] Calculate Bit Growth for truncation ranges
 - [x] Rounding before truncation (done for CIC, TODO: FIR)
-- [ ] Reset Signals
