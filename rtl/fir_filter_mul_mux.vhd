@@ -52,6 +52,8 @@ architecture Behavioral of fir_filter_mul_mux is
     signal r_counter : natural; --:= 0;
     signal r_sync    : std_logic := '0';
 
+    signal r_output : STD_LOGIC_VECTOR (g_BITDEPTH-1 downto 0);
+ 
 begin
     process (i_clk_768e5, i_clk_192e3_en)
     begin
@@ -81,7 +83,7 @@ begin
 
             if i_clk_192e3_en = '1' then
                 r_counter <= 0;
-                o_SIGNAL_OUT <= STD_LOGIC_VECTOR(sum(47-1 downto 24-1)); -- TODO: Calculate right range based on filter length. rounding... 
+                r_output <= STD_LOGIC_VECTOR(sum(47-1 downto 24-1)); -- TODO: Calculate right range based on filter length. rounding... 
                 sum := (others => '0');
             else
                 if r_counter < g_COEFFICIENTS'LENGTH-1 then
@@ -90,5 +92,7 @@ begin
             end if;
         end if;
     end process;
+
+    o_SIGNAL_OUT <= r_output;
 
 end Behavioral;
