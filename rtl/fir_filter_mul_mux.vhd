@@ -9,7 +9,7 @@
 -- Target Devices: 
 -- Tool Versions: 
 -- Description: FIR Filter with Multiplexed Multiplication
---     Due to limited DSP multipliers in FPGA, this filter has been create to multiplex ~30 FIR coefficients through a single mult
+--     Due to limited DSP multipliers in FPGA, this filter has been create to multiplex up to 400 FIR coefficients through a single mult
 --     currently limited by max Integer values for coefficients, it seems.. TODO: investigate floating point version?
 -- Dependencies: 
 -- 
@@ -76,14 +76,10 @@ begin
             if r_counter <= g_STAGES then
                 sum := sum + (r_taps(r_counter) * g_COEFFICIENTS(r_counter));
             end if;
-            
-            -- TODO: probably roll these two processes together,
-            --       output on i_clk_192e3, support arbitrary higher i_clk speeds
-            --       for now ~128 taps is pretty resonable
 
             if i_clk_192e3_en = '1' then
                 r_counter <= 0;
-                r_output <= STD_LOGIC_VECTOR(sum(47-1 downto 24-1)); -- TODO: Calculate right range based on filter length. rounding... 
+                o_SIGNAL_OUT <= STD_LOGIC_VECTOR(sum(47-1 downto 24-1)); -- TODO: Calculate right range based on filter length. rounding... 
                 sum := (others => '0');
             else
                 if r_counter < g_COEFFICIENTS'LENGTH-1 then
@@ -93,6 +89,6 @@ begin
         end if;
     end process;
 
-    o_SIGNAL_OUT <= r_output;
+    -- o_SIGNAL_OUT <= r_output;
 
 end Behavioral;

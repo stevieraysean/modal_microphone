@@ -83,7 +83,6 @@ begin
         variable v_integrator      : real := 0.0;
         variable v_dac             : real := 0.0;
         variable v_tstep           : real := 0.0;
-        
 
     begin
         if rising_edge(r_clk_3072e3) then
@@ -91,7 +90,7 @@ begin
 
             -- Chirp signal -- TODO: import better test signal
             if r_sine_wave_freq < 30000.0 then
-                r_sine_wave_freq <= r_sine_wave_freq;-- + 0.125;
+                r_sine_wave_freq <= r_sine_wave_freq; --+ 0.125;
             else
                 v_amp := 0.0;
                 v_tstep := 0.0;
@@ -102,9 +101,7 @@ begin
             -- half what it should be, using PI instead of 2_PI here is a cheap fix.
             -- verified by measuring and calculating frequencies of the waveform in simulation, they match r_sine_wave_freq 
             v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * r_sine_wave_freq);
-            -- If testing single static frequency use:
             --v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * r_sine_wave_freq);
-
 
             v_difference := v_analog_sig - v_dac;
             v_integrator := v_difference + v_integrator;
