@@ -31,7 +31,6 @@ entity modal_microphone_top is
         );
     Port ( 
         i_clock     : in STD_LOGIC;
-        --i_pdm_in    : in STD_LOGIC;
         i_pdm_in    : in std_logic_vector(g_NUMBER_MICS-1 downto 0);       --TODO: input array for mics
         o_output    : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
     );
@@ -67,11 +66,8 @@ architecture Behavioral of modal_microphone_top is
     signal r_clk_384e6        : std_logic;
     signal r_clk_384e6_reset  : std_logic := '0';
     signal r_clk_384e6_locked : std_logic;
-
     signal r_clk_3072e3_en       : std_logic := '0';
     signal r_clk_192e3_en        : std_logic := '0';
-
-
     signal r_clk_3072e3_count : integer   := 0;
     signal r_clk_192e3_count  : integer   := 0;
 
@@ -85,42 +81,31 @@ begin
             clk_in1  => i_clock
         );
 
-
     process (r_clk_384e6)
     begin
         if rising_edge(r_clk_384e6) then
-            -- r_clk_3072e3_count <= r_clk_3072e3_count + 1;
-
             if r_clk_3072e3_count = c_CLOCK_3072E3_DIV-1 then
                 r_clk_3072e3_en <= '1';
                 r_clk_3072e3_count <= 0;
             else
-                --if r_clk_3072e3_en_count = (c_CLOCK_3072E3_DIV-1)/2 then
                 r_clk_3072e3_en <= '0';
-                --end if;
                 r_clk_3072e3_count <= r_clk_3072e3_count + 1;
             end if;
         end if;
     end process;
 
-
     process (r_clk_384e6)
     begin
         if rising_edge(r_clk_384e6) then
-            -- r_clk_192e3_count <= r_clk_192e3_count + 1;
-
             if r_clk_192e3_count = c_CLOCK_192E3_DIV-1 then
                 r_clk_192e3_en <= '1';
                 r_clk_192e3_count <= 0;
             else
-                -- if r_clk_192e3_en_count = (c_CLOCK_192E3_DIV-1)/2 then
                 r_clk_192e3_en <= '0';
-                -- end if;
                 r_clk_192e3_count <= r_clk_192e3_count + 1;
             end if;
         end if;
     end process;
-
 
     g_GEN_MICS: for mic in 0 to g_NUMBER_MICS-1 generate
     microphone_channel_inst_1 : microphone_channel
@@ -133,22 +118,16 @@ begin
         );
     end generate g_GEN_MICS;
 
-
     process(mic_outs)
         variable sum : signed((g_MIC_BITDEPTH*2)-1 downto 0) := (others => '0');
     begin
-        --if rising_edge(i_clock_div) then
-            sum := (others => '0');
-            
-            for mic in 0 to g_NUMBER_MICS-1 loop
-                sum := signed(mic_outs(mic)) + sum;
-            end loop;
-            -- mode_output <= signed(mic_outs(0)) + signed(mic_outs(1)) + signed(mic_outs(2)) + signed(mic_outs(3)) + signed(mic_outs(4)) + signed(mic_outs(5));
+        sum := (others => '0');
+        
+        for mic in 0 to g_NUMBER_MICS-1 loop
+            sum := signed(mic_outs(mic)) + sum;
+        end loop;
 
-            -- o_output <= std_logic_vector(mode_output);
-            o_output <= std_logic_vector(sum(g_MIC_BITDEPTH-1downto 0));
-
-        --end if;
+        o_output <= std_logic_vector(sum(g_MIC_BITDEPTH-1downto 0));
     end process;
 
 

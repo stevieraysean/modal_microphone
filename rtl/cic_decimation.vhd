@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
 -- Company: 
--- Engineer: 
+-- Engineer: Sean Pierce
 -- 
 -- Create Date: 02/23/2022 08:52:22 PM
 -- Design Name: 
@@ -71,11 +71,9 @@ begin
     process_r_pdm : PROCESS (i_clk_768e5, i_clk_3072e3_en)
     begin
         if rising_edge(i_clk_768e5) and i_clk_3072e3_en = '1' then
-            -- cast PDM 0/1 input to -1/1
-            -- TODO: double buffer?
             r_pdm_buff1 <= i_cic_in;
             r_pdm_buff2 <= r_pdm_buff1;
-
+            -- cast PDM 0/1 input to -1/1
             if (r_pdm_buff2 = '1') then
                 r_pdm <= to_signed(1, (c_CIC_BIT_DEPTH));
             else
@@ -83,7 +81,6 @@ begin
             end if;
             
             r_integrator_delays(0) <= w_integrators(0);
-
         end if;
     end process;
 
@@ -100,22 +97,7 @@ begin
         w_integrators(stage) <= r_integrator_delays(stage) + w_integrators(stage-1);
     end generate g_GENERATE_w_integrators; 
 
-    -- Decimation Stage
-    -- process_decimator_clock : PROCESS (i_clk_3072e3)
-    -- begin
-    --     if rising_edge(i_clk_3072e3) then
-    --         r_decimator_counter <= r_decimator_counter + 1;
-
-    --         if (r_decimator_counter = g_DECIMATION_RATE) then
-    --             r_decimator_counter <= "0000001";
-    --             r_decimator_clk <= '1';
-    --         end if;
-    --         if (r_decimator_counter = g_DECIMATION_RATE/2) then
-    --             r_decimator_clk <= '0';
-    --         end if;
-    --     end if;
-    -- end process;
-
+    -- Decimation
     process_decimated_signals : PROCESS (i_clk_768e5, i_clk_192e3_en)
     begin
         if rising_edge(i_clk_768e5) and i_clk_192e3_en = '1' then
