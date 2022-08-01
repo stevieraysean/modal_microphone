@@ -13,6 +13,8 @@ source rebuild.tcl
 ```
 may need to delete modal_microphone_vivado directory before source command, or use -force arguement.
 
+depends on Arty A7-35t files from https://github.com/Digilent/vivado-boards
+
 Method used for Vivado Git repo setup:
 https://github.com/jhallen/vivado_setup
 
