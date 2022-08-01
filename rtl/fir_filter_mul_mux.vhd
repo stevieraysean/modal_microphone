@@ -50,15 +50,15 @@ architecture Behavioral of fir_filter_mul_mux is
 
     signal r_taps    : t_fir_stage  := (others => to_signed(0, g_BITDEPTH));
     signal r_counter : natural; --:= 0;
-    signal r_sync    : std_logic := '0';
+    --signal r_sync    : std_logic := '0';
 
-    signal r_output : STD_LOGIC_VECTOR (g_BITDEPTH-1 downto 0);
+    --signal r_output : STD_LOGIC_VECTOR (g_BITDEPTH-1 downto 0);
  
 begin
     process (i_clk_768e5, i_clk_192e3_en)
     begin
         if rising_edge(i_clk_768e5) and i_clk_192e3_en = '1' then
-            r_sync <= '1';
+            --r_sync <= '1';
             for stage in 0 to g_STAGES loop
                 if stage = 0 then
                     r_taps(stage) <= signed(i_SIGNAL_IN);
@@ -69,10 +69,11 @@ begin
         end if;
     end process;
 
-    process (i_clk_768e5, r_sync, i_clk_192e3_en)
+
+    process (i_clk_768e5, i_clk_192e3_en)
         variable sum : signed((g_BITDEPTH*2)-1 downto 0) := (others => '0');
     begin
-        if rising_edge(i_clk_768e5) and r_sync = '1' then
+        if rising_edge(i_clk_768e5) then -- and r_sync = '1' then
             if r_counter <= g_STAGES then
                 sum := sum + (r_taps(r_counter) * g_COEFFICIENTS(r_counter));
             end if;
@@ -89,6 +90,6 @@ begin
         end if;
     end process;
 
-    -- o_SIGNAL_OUT <= r_output;
+    --o_SIGNAL_OUT <= r_output;
 
 end Behavioral;
