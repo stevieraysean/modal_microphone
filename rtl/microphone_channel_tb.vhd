@@ -5,10 +5,10 @@ use IEEE.MATH_REAL.ALL;
 
 use work.data_types.ALL;
 
-entity mems_pdm_tb is
-end mems_pdm_tb;
+entity microphone_channel_tb is
+end microphone_channel_tb;
 
-architecture Behavioral of mems_pdm_tb is       
+architecture Behavioral of microphone_channel_tb is       
     constant c_CLOCK_FREQ_HZ     : real := 76800000.0;
     constant c_CLOCK_3072E3_DIV  : integer := 25;  -- 384MHz to 3.072MHz
     constant c_CLOCK_192E3_DIV   : integer := 400; -- 384MHz to 192kHz
@@ -78,7 +78,7 @@ begin
 
     sine_wave : process(r_clk_3072e3)
         variable v_analog_sig      : real := 0.0;
-        variable v_amp             : real := 0.95; -- prevent clipping, TODO: fix & remove
+        variable v_amp             : real := 0.93; -- prevent clipping, TODO: fix & remove
         variable v_difference      : real := 0.0;
         variable v_integrator      : real := 0.0;
         variable v_dac             : real := 0.0;
@@ -89,8 +89,8 @@ begin
             v_tstep := v_tstep + c_CLOCK_DIV_PERIOD;
 
             -- Chirp signal -- TODO: import better test signal
-            if r_sine_wave_freq < 30000.0 then
-                r_sine_wave_freq <= r_sine_wave_freq; --+ 0.125;
+            if r_sine_wave_freq < 24000.0 then
+                r_sine_wave_freq <= r_sine_wave_freq + 0.125;
             else
                 v_amp := 0.0;
                 v_tstep := 0.0;
@@ -100,7 +100,7 @@ begin
             -- However the accumulation of change in time and frequency makes it look like filter cutoff
             -- half what it should be, using PI instead of 2_PI here is a cheap fix.
             -- verified by measuring and calculating frequencies of the waveform in simulation, they match r_sine_wave_freq 
-            v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * r_sine_wave_freq);
+            v_analog_sig := v_amp * sin(MATH_PI * v_tstep * r_sine_wave_freq);
             --v_analog_sig := v_amp * sin(MATH_2_PI * v_tstep * r_sine_wave_freq);
 
             v_difference := v_analog_sig - v_dac;

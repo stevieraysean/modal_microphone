@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------------------
 -- Company: 
--- Engineer: 
+-- Engineer: Sean Pierce
 -- 
 -- Create Date: 04/01/2022 09:21:13 AM
 -- Design Name: 
@@ -8,7 +8,7 @@
 -- Project Name: 
 -- Target Devices: 
 -- Tool Versions: 
--- Description: 
+-- Description: Top Module for modal microphone
 -- 
 -- Dependencies: 
 -- 
@@ -43,36 +43,38 @@ architecture Behavioral of modal_microphone_top is
     
     component clk_wiz_0
         port(
-            clk_out1          : out    std_logic;
-            reset             : in     std_logic;
-            locked            : out    std_logic;
-            clk_in1           : in     std_logic
+            reset    : in  std_logic;
+            clk_in1  : in  std_logic;
+            clk_out1 : out std_logic;
+            locked   : out std_logic
         );
     end component;
 
     component microphone_channel is
         port (
-            i_clk_768e5  : in STD_LOGIC;
+            i_clk_768e5     : in STD_LOGIC;
             i_clk_3072e3_en : in STD_LOGIC;
             i_clk_192e3_en  : in STD_LOGIC;
-            i_pdm        : in std_logic;
-            o_output     : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
+            i_pdm           : in std_logic;
+            o_output        : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
         );
     end component microphone_channel;
-
-    signal mic_outs : array_of_std_logic_vector(g_NUMBER_MICS-1 downto 0);
-    signal mode_output : signed((g_MIC_BITDEPTH)-1 downto 0) := (others => '0');
 
     signal r_clk_384e6        : std_logic;
     signal r_clk_384e6_reset  : std_logic := '0';
     signal r_clk_384e6_locked : std_logic;
-    signal r_clk_3072e3_en       : std_logic := '0';
-    signal r_clk_192e3_en        : std_logic := '0';
+    signal r_clk_3072e3_en    : std_logic := '0';
+    signal r_clk_192e3_en     : std_logic := '0';
     signal r_clk_3072e3_count : integer   := 0;
     signal r_clk_192e3_count  : integer   := 0;
 
-begin
+    signal r_mic_outs           : array_of_std_logic_vector(g_NUMBER_MICS-1 downto 0);
 
+    -- TODO
+    signal r_mode_output        : signed((g_MIC_BITDEPTH)-1 downto 0) := (others => '0');
+
+
+begin
     clk_wiz_0_inst : clk_wiz_0
         port map ( 
             clk_out1 => r_clk_384e6,
@@ -81,9 +83,10 @@ begin
             clk_in1  => i_clock
         );
 
-    process (r_clk_384e6)
+
+    process (r_clk_384e6, r_clk_384e6_locked)
     begin
-        if rising_edge(r_clk_384e6) then
+        if rising_edge(r_clk_384e6) and r_clk_384e6_locked = '1' then
             if r_clk_3072e3_count = c_CLOCK_3072E3_DIV-1 then
                 r_clk_3072e3_en <= '1';
                 r_clk_3072e3_count <= 0;
@@ -94,9 +97,10 @@ begin
         end if;
     end process;
 
-    process (r_clk_384e6)
+
+    process (r_clk_384e6, r_clk_384e6_locked)
     begin
-        if rising_edge(r_clk_384e6) then
+        if rising_edge(r_clk_384e6)  and r_clk_384e6_locked = '1' then
             if r_clk_192e3_count = c_CLOCK_192E3_DIV-1 then
                 r_clk_192e3_en <= '1';
                 r_clk_192e3_count <= 0;
@@ -107,6 +111,7 @@ begin
         end if;
     end process;
 
+
     g_GEN_MICS: for mic in 0 to g_NUMBER_MICS-1 generate
     microphone_channel_inst_1 : microphone_channel
         port map (
@@ -114,21 +119,21 @@ begin
             i_clk_3072e3_en => r_clk_3072e3_en,
             i_clk_192e3_en  => r_clk_192e3_en,
             i_pdm        => i_pdm_in(mic),
-            o_output     => mic_outs(mic)
+            o_output     => r_mic_outs(mic)
         );
     end generate g_GEN_MICS;
 
-    process(mic_outs)
+
+    process(r_mic_outs)
         variable sum : signed((g_MIC_BITDEPTH*2)-1 downto 0) := (others => '0');
     begin
         sum := (others => '0');
         
         for mic in 0 to g_NUMBER_MICS-1 loop
-            sum := signed(mic_outs(mic)) + sum;
+            sum := signed(r_mic_outs(mic)) + sum;
         end loop;
 
         o_output <= std_logic_vector(sum(g_MIC_BITDEPTH-1downto 0));
     end process;
-
 
 end Behavioral;

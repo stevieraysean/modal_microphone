@@ -39,11 +39,11 @@ end microphone_channel;
 architecture Behavioral of microphone_channel is
     component cic_decimation is
         port (
-            i_clk_768e5 : in std_logic;
+            i_clk_768e5     : in std_logic;
             i_clk_3072e3_en : in std_logic;
             i_clk_192e3_en  : in std_logic;
-            i_cic_in     : in std_logic;
-            o_cic_out    : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
+            i_cic_in        : in std_logic;
+            o_cic_out       : out std_logic_vector(g_MIC_BITDEPTH-1 downto 0)
         );
     end component cic_decimation;
 
@@ -68,18 +68,18 @@ architecture Behavioral of microphone_channel is
 begin
     cic_decimation_inst : cic_decimation
         port map (
-            i_clk_768e5  => i_clk_768e5,
-            i_clk_3072e3_en => i_clk_3072e3_en, -- 3.071 MHZ
-            i_clk_192e3_en  => i_clk_192e3_en,  -- 192 kHz
-            i_cic_in     => i_pdm,
-            o_cic_out    => r_cic_output
+            i_clk_768e5     => i_clk_768e5,
+            i_clk_3072e3_en => i_clk_3072e3_en,
+            i_clk_192e3_en  => i_clk_192e3_en,
+            i_cic_in        => i_pdm,
+            o_cic_out       => r_cic_output
         );
 
     fir_filter_mul_mux_inst : fir_filter_mul_mux
         generic map(
             g_BITDEPTH => g_MIC_BITDEPTH,
             -- CIC Compensator, Fpb = 24kHz
-            -- TODO: revisit coefficients. lots of PB ripple it seems
+            -- TODO: check/revisit coefficients. lots of PB ripple..
             g_COEFFICIENTS => (-1678,-2517,-2517,838,7549,13421,14260,6710,-5873,-16778,-15939,-839,20132,31037,19293,-11745,-41105,-44460,-11745,38587,69625,51170,-14261,-83048,-99825,-37749,69625,144284,117440,-13422,-164417,-216427,-99825,130862,317089,290245,5872,-389232,-607336,-387554,332188,1332110,2201170,2544264,2201170,1332110,332188,-387554,-607336,-389232,5872,290245,317089,130862,-99825,-216427,-164417,-13422,117440,144284,69625,-37749,-99825,-83048,-14261,51170,69625,38587,-11745,-44460,-41105,-11745,19293,31037,20132,-839,-15939,-16778,-5873,6710,14260,13421,7549,838,-2517,-2517,-1678)
         )
         port map (
