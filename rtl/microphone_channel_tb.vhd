@@ -89,7 +89,7 @@ begin
             v_tstep := v_tstep + c_CLOCK_DIV_PERIOD;
 
             -- Chirp signal -- TODO: import better test signal
-            if r_sine_wave_freq < 96000.0 then
+            if r_sine_wave_freq < 24000.0 then
                 r_sine_wave_freq <= r_sine_wave_freq + 0.125;
             else
                 v_amp := 0.0;
