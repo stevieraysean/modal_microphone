@@ -55,22 +55,23 @@ architecture Behavioral of fir_filter_mul_mux is
     --signal r_output : STD_LOGIC_VECTOR (g_BITDEPTH-1 downto 0);
  
 begin
-    process (i_clk_768e5, i_clk_192e3_en)
+    process (i_clk_768e5)
     begin
-        if rising_edge(i_clk_768e5) and i_clk_192e3_en = '1' then
-            --r_sync <= '1';
-            for stage in 0 to g_STAGES loop
-                if stage = 0 then
-                    r_taps(stage) <= signed(i_SIGNAL_IN);
-                else
-                    r_taps(stage) <= r_taps(stage-1);
-                end if;
-            end loop;
+        if rising_edge(i_clk_768e5) then
+            if i_clk_192e3_en = '1' then
+                for stage in 0 to g_STAGES loop
+                    if stage = 0 then
+                        r_taps(stage) <= signed(i_SIGNAL_IN);
+                    else
+                        r_taps(stage) <= r_taps(stage-1);
+                    end if;
+                end loop;
+            end if;
         end if;
     end process;
 
 
-    process (i_clk_768e5, i_clk_192e3_en)
+    process (i_clk_768e5)
         variable sum : signed((g_BITDEPTH*2)-1 downto 0) := (others => '0');
     begin
         if rising_edge(i_clk_768e5) then -- and r_sync = '1' then
